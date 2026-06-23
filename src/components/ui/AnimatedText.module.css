@@ -1,0 +1,87 @@
+/* AnimatedText — Phase 2.3. Layout/visual scaffolding; motion is driven by GSAP. */
+
+.root {
+  display: inline-block;
+}
+
+/* reveal — each word rides up out of an overflow-hidden mask */
+.wordMask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  margin-right: 0.25em;
+}
+
+.word {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* typewriter — characters revealed one by one, trailing caret blinks */
+.char {
+  display: inline-block;
+  white-space: pre;
+}
+
+.caret {
+  display: inline-block;
+  width: 0.08em;
+  margin-left: 0.04em;
+  align-self: stretch;
+  background: var(--accent-cyan);
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* gradient — animated color sweep clipped to the text */
+.gradient {
+  background: linear-gradient(
+    90deg,
+    var(--accent-cyan),
+    var(--accent-blue),
+    var(--accent-purple),
+    var(--accent-cyan)
+  );
+  background-size: 200% auto;
+  background-position: 0% center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* glitch — layered RGB-split copies jittered by GSAP */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.glitchBase {
+  position: relative;
+  z-index: 1;
+}
+
+.glitchLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.glitchLayer:first-of-type {
+  color: var(--accent-cyan);
+  mix-blend-mode: screen;
+}
+
+.glitchLayer:last-of-type {
+  color: var(--accent-purple);
+  mix-blend-mode: screen;
+}
