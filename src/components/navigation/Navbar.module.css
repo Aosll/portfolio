@@ -1,0 +1,152 @@
+/* Navbar — Phase 2.4. Fixed glass header; hide/show + blur driven from JS. */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition:
+    background 0.4s var(--transition-smooth),
+    backdrop-filter 0.4s var(--transition-smooth),
+    border-color 0.4s var(--transition-smooth);
+}
+
+/* glassmorphism kicks in once the page is scrolled */
+.scrolled {
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border-bottom-color: var(--border-glass);
+}
+
+/* OED monogram */
+.logo {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 18px rgba(0, 212, 255, 0.4);
+}
+
+/* desktop links */
+.links {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.5vw, 2rem);
+}
+
+.link {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  transition: color 0.3s var(--transition-smooth);
+}
+
+.link:hover {
+  color: var(--text-primary);
+}
+
+.link.active {
+  color: var(--accent-cyan);
+}
+
+.link.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.iconLink {
+  display: inline-flex;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  transition:
+    color 0.3s var(--transition-smooth),
+    transform 0.3s var(--transition-smooth);
+}
+
+.iconLink:hover {
+  color: var(--accent-cyan);
+  transform: translateY(-2px);
+}
+
+.hamburger {
+  display: none;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  line-height: 0;
+}
+
+/* mobile dropdown */
+.mobilePanel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem clamp(1rem, 4vw, 3rem) 1.5rem;
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: var(--blur-heavy);
+  -webkit-backdrop-filter: var(--blur-heavy);
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.mobileLink {
+  padding: 0.75rem 0;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  text-align: left;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-glass);
+  transition: color 0.3s var(--transition-smooth);
+}
+
+.mobileLink:last-child {
+  border-bottom: none;
+}
+
+.mobileLink:hover,
+.mobileLink.active {
+  color: var(--accent-cyan);
+}
+
+/* responsive switch at 768px */
+@media (max-width: 767px) {
+  .links {
+    display: none;
+  }
+  .hamburger {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobilePanel {
+    display: none;
+  }
+}
