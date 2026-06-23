@@ -1,0 +1,80 @@
+/* ScrollProgress — Phase 3.3. Fixed vertical dot rail on the right edge. */
+
+.progress {
+  position: fixed;
+  top: 50%;
+  right: clamp(1rem, 2.5vw, 2rem);
+  transform: translateY(-50%);
+  z-index: 900;
+  display: flex;
+}
+
+.track {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* connecting line threading the dots */
+.track::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: var(--border-glass);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dot {
+  position: relative;
+  z-index: 1;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition:
+    background-color 0.4s var(--transition-smooth),
+    box-shadow 0.4s var(--transition-smooth);
+}
+
+.dot:hover {
+  background: var(--text-secondary);
+}
+
+.dot.active {
+  background: var(--accent-cyan);
+  box-shadow:
+    0 0 4px var(--accent-cyan),
+    0 0 16px var(--accent-cyan);
+}
+
+/* label sits to the left of the active dot */
+.label {
+  position: absolute;
+  right: calc(100% + 0.9rem);
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--accent-cyan);
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .progress {
+    display: none;
+  }
+}
