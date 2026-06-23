@@ -1,4 +1,5 @@
 import { SITE } from './data/site.js';
+import { COLORS } from '@utils/colors';
 
 /**
  * App shell.
@@ -11,7 +12,14 @@ export default function App() {
   return (
     <main className="app-shell">
       <section className="boot">
-        <p className="boot__eyebrow">Phase 1 · Foundation online</p>
+        <p className="boot__eyebrow">
+          <span
+            className="boot__dot u-pulse"
+            style={{ background: COLORS.accent }}
+            aria-hidden="true"
+          />
+          Phase 1 · Foundation online
+        </p>
         <h1 className="boot__title">{SITE.name}</h1>
         <p className="boot__role">{SITE.role}</p>
         <p className="boot__tagline">{SITE.tagline}</p>
