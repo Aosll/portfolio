@@ -1,37 +1,65 @@
-import { SITE } from './data/site.js';
-import { COLORS } from '@utils/colors';
+import { useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+import { useLenis } from '@hooks/useLenis';
+import { useScrollProgress } from '@hooks/useScrollProgress';
+import { useStore } from '@/store/useStore';
+
+import Navbar from '@components/navigation/Navbar';
+import ScrollProgress from '@components/ui/ScrollProgress';
+import LoadingScreen from '@components/ui/LoadingScreen';
+
+import HeroSection from '@sections/Hero/HeroSection';
+import AboutSection from '@sections/About/AboutSection';
+import SkillsSection from '@sections/Skills/SkillsSection';
+import ProjectsSection from '@sections/Projects/ProjectsSection';
+import ExperienceSection from '@sections/Experience/ExperienceSection';
+import CertsSection from '@sections/Certifications/CertsSection';
+import ContactSection from '@sections/Contact/ContactSection';
+
+gsap.registerPlugin(ScrollTrigger);
 
 /**
- * App shell.
+ * App — Phase 3.4 root layout.
  *
- * Phase 1 renders a foundation placeholder so we can confirm the toolchain,
- * aliases and design tokens are wired up. Sections (Hero, About, Projects,
- * Experience, Contact) and the WebGL canvas are layered in from Phase 4 onward.
+ * Boots the Lenis smooth-scroll engine, keeps ScrollTrigger in sync with it,
+ * gates the experience behind the LoadingScreen, and lays out the navigation
+ * chrome (Navbar, ScrollProgress) plus every section in order.
  */
 export default function App() {
-  return (
-    <main className="app-shell">
-      <section className="boot">
-        <p className="boot__eyebrow">
-          <span
-            className="boot__dot u-pulse"
-            style={{ background: COLORS.accentCyan }}
-            aria-hidden="true"
-          />
-          Phase 1 · Foundation online
-        </p>
-        <h1 className="boot__title">{SITE.name}</h1>
-        <p className="boot__role">{SITE.role}</p>
-        <p className="boot__tagline">{SITE.tagline}</p>
+  const lenis = useLenis();
+  useScrollProgress();
+  const isLoading = useStore((s) => s.isLoading);
 
-        <ul className="boot__stack" aria-label="Tech stack">
-          {SITE.stack.map((tech) => (
-            <li key={tech} className="boot__chip">
-              {tech}
-            </li>
-          ))}
-        </ul>
-      </section>
-    </main>
+  // Drive ScrollTrigger from Lenis' scroll so pins/reveals stay frame-accurate.
+  useEffect(() => {
+    if (!lenis) return undefined;
+    lenis.on('scroll', ScrollTrigger.update);
+    ScrollTrigger.refresh();
+    return () => lenis.off('scroll', ScrollTrigger.update);
+  }, [lenis]);
+
+  // GSAP context cleanup on unmount.
+  useEffect(() => {
+    const ctx = gsap.context(() => {});
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <>
+      {isLoading && <LoadingScreen />}
+      <Navbar />
+      <ScrollProgress />
+      <main>
+        <HeroSection />
+        <AboutSection />
+        <SkillsSection />
+        <ProjectsSection />
+        <ExperienceSection />
+        <CertsSection />
+        <ContactSection />
+      </main>
+    </>
   );
 }

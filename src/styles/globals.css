@@ -72,6 +72,15 @@ button {
 }
 
 /* ----------------------------------------------------------------------------
+   Section baseline (Phase 3) — gives every section scrollable height so the
+   smooth-scroll engine + progress rail work before per-section content lands.
+---------------------------------------------------------------------------- */
+.section {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* ----------------------------------------------------------------------------
    Phase 1 boot screen (temporary — replaced by sections from Phase 5)
 ---------------------------------------------------------------------------- */
 .app-shell {
