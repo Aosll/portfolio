@@ -1,33 +1,29 @@
 import { create } from 'zustand';
 
 /**
- * Global UI/experience state (Zustand).
- * Phase 1 establishes the shape; sections and the WebGL layer subscribe to
- * these slices from Phase 4 onward (loading gate, active section, scroll, menu).
+ * Global UI / experience state (Zustand).
+ *
+ * Shape defined in Phase 1.4. Sections, navigation and the WebGL layer
+ * subscribe to these slices from Phase 3 onward.
  */
 export const useStore = create((set) => ({
-  // --- Loading / intro gate ---
-  isLoaded: false,
-  setLoaded: (isLoaded) => set({ isLoaded }),
-
-  loadProgress: 0,
-  setLoadProgress: (loadProgress) => set({ loadProgress }),
-
-  // --- Navigation ---
-  activeSection: 'hero',
-  setActiveSection: (activeSection) => set({ activeSection }),
-
+  // --- State ---
+  currentSection: 'hero', // active section ID
+  scrollProgress: 0, // 0–1 overall page progress
   isMenuOpen: false,
-  toggleMenu: () => set((s) => ({ isMenuOpen: !s.isMenuOpen })),
-  setMenuOpen: (isMenuOpen) => set({ isMenuOpen }),
+  isLoading: true, // intro/loader gate — starts true
+  loadingProgress: 0, // 0–100
+  activeProject: null, // project ID currently focused, or null
+  isMobile: false,
 
-  // --- Scroll ---
-  scrollProgress: 0,
+  // --- Actions ---
+  setCurrentSection: (currentSection) => set({ currentSection }),
   setScrollProgress: (scrollProgress) => set({ scrollProgress }),
-
-  // --- Capability flags (set by Phase 9 perf audit) ---
-  reducedMotion: false,
-  setReducedMotion: (reducedMotion) => set({ reducedMotion }),
+  toggleMenu: () => set((state) => ({ isMenuOpen: !state.isMenuOpen })),
+  setIsLoading: (isLoading) => set({ isLoading }),
+  setLoadingProgress: (loadingProgress) => set({ loadingProgress }),
+  setActiveProject: (activeProject) => set({ activeProject }),
+  setIsMobile: (isMobile) => set({ isMobile }),
 }));
 
 export default useStore;
