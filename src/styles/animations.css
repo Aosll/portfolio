@@ -36,9 +36,9 @@
 }
 
 .u-float {
-  animation: float 4s var(--ease-in-out) infinite;
+  animation: float 4s var(--transition-smooth) infinite;
 }
 
 .u-pulse {
-  animation: pulse-glow 2.4s var(--ease-in-out) infinite;
+  animation: pulse-glow 2.4s var(--transition-smooth) infinite;
 }

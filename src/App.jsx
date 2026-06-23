@@ -15,7 +15,7 @@ export default function App() {
         <p className="boot__eyebrow">
           <span
             className="boot__dot u-pulse"
-            style={{ background: COLORS.accent }}
+            style={{ background: COLORS.accentCyan }}
             aria-hidden="true"
           />
           Phase 1 · Foundation online

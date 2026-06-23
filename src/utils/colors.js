@@ -1,27 +1,34 @@
 /**
  * colors.js — design token constants (JS mirror of styles/variables.css).
- * Three.js materials and GSAP tweens read hex/number values from here so the
- * 3D layer and the DOM share one palette.
+ * Three.js materials and GSAP tweens read values from here so the 3D layer and
+ * the DOM share one palette. Keep in sync with variables.css.
  */
 export const COLORS = {
-  bg: '#05060a',
-  bgElev: '#0b0d14',
-  text: '#e8eaf0',
-  textMuted: '#9aa0b0',
-  textDim: '#5a6072',
+  bgPrimary: '#0a0a0f',
+  bgSecondary: '#0d0d1a',
+  bgCard: 'rgba(18, 18, 31, 0.85)',
+  bgGlass: 'rgba(255, 255, 255, 0.03)',
 
-  accent: '#5eead4',
-  accent2: '#818cf8',
-  accent3: '#f472b6',
+  accentBlue: '#4f8ef7',
+  accentCyan: '#00d4ff',
+  accentPurple: '#8b5cf6',
+  accentEmerald: '#10b981',
+  accentGold: '#f59e0b',
+
+  textPrimary: '#f0f4ff',
+  textSecondary: '#a0aec0',
+  textMuted: '#4a5568',
 };
 
 /** Same palette as Three.js-friendly hex numbers (0x...). */
 export const COLORS_HEX = {
-  bg: 0x05060a,
-  bgElev: 0x0b0d14,
-  accent: 0x5eead4,
-  accent2: 0x818cf8,
-  accent3: 0xf472b6,
+  bgPrimary: 0x0a0a0f,
+  bgSecondary: 0x0d0d1a,
+  accentBlue: 0x4f8ef7,
+  accentCyan: 0x00d4ff,
+  accentPurple: 0x8b5cf6,
+  accentEmerald: 0x10b981,
+  accentGold: 0xf59e0b,
 };
 
 export default COLORS;

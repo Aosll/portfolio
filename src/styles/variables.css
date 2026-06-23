@@ -1,51 +1,47 @@
 /**
- * Design tokens (Phase 1 baseline).
- * Phase 2 expands this into the full glassmorphism design system.
+ * Design tokens — Phase 2.1.
+ * Single source of truth for the visual system. Nothing is hard-coded elsewhere;
+ * every section and component reads from these custom properties.
  */
 :root {
-  /* --- Color: deep-space base --- */
-  --color-bg: #05060a;
-  --color-bg-elev: #0b0d14;
-  --color-surface: rgba(255, 255, 255, 0.04);
-  --color-border: rgba(255, 255, 255, 0.1);
+  /* COLORS */
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #0d0d1a;
+  --bg-card: rgba(18, 18, 31, 0.85);
+  --bg-glass: rgba(255, 255, 255, 0.03);
 
-  --color-text: #e8eaf0;
-  --color-text-muted: #9aa0b0;
-  --color-text-dim: #5a6072;
+  --accent-blue: #4f8ef7;
+  --accent-cyan: #00d4ff;
+  --accent-purple: #8b5cf6;
+  --accent-emerald: #10b981;
+  --accent-gold: #f59e0b;
 
-  /* --- Accents --- */
-  --color-accent: #5eead4;
-  --color-accent-2: #818cf8;
-  --color-accent-3: #f472b6;
+  --text-primary: #f0f4ff;
+  --text-secondary: #a0aec0;
+  --text-muted: #4a5568;
 
-  /* --- Typography --- */
-  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-accent: rgba(79, 142, 247, 0.3);
 
-  /* --- Spacing scale --- */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-12: 3rem;
-  --space-16: 4rem;
-  --space-24: 6rem;
+  /* TYPOGRAPHY */
+  --font-display: 'Inter', 'SF Pro Display', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-  /* --- Radii --- */
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 24px;
-  --radius-pill: 999px;
+  --text-hero: clamp(3.5rem, 8vw, 7rem);
+  --text-h1: clamp(2rem, 4vw, 3.5rem);
+  --text-h2: clamp(1.5rem, 3vw, 2.5rem);
+  --text-h3: clamp(1.1rem, 2vw, 1.5rem);
+  --text-body: clamp(0.875rem, 1.5vw, 1rem);
 
-  /* --- Motion --- */
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* SPACING */
+  --space-section: clamp(80px, 12vw, 160px);
+  --space-content: clamp(24px, 4vw, 64px);
 
-  /* --- Layout --- */
-  --max-width: 1200px;
-  --z-canvas: 0;
-  --z-content: 10;
-  --z-overlay: 100;
+  /* EFFECTS */
+  --blur-glass: blur(20px) saturate(180%);
+  --blur-heavy: blur(40px) saturate(200%);
+  --shadow-glow-blue: 0 0 40px rgba(79, 142, 247, 0.15);
+  --shadow-glow-cyan: 0 0 60px rgba(0, 212, 255, 0.12);
+  --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
