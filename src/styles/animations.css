@@ -1,0 +1,44 @@
+/**
+ * animations.css — keyframes & CSS-driven motion (Phase 1 baseline).
+ * Phase 3 (GSAP/Lenis) and later sections add to this. GSAP handles most
+ * scroll-driven motion; CSS keyframes here cover ambient/looping effects.
+ */
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+
+.u-float {
+  animation: float 4s var(--ease-in-out) infinite;
+}
+
+.u-pulse {
+  animation: pulse-glow 2.4s var(--ease-in-out) infinite;
+}
