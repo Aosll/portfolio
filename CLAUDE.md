@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A cinematic, WebGL-driven portfolio site for **Ömer Efe Dikici (Computer Engineer)**. It is being built **phase-by-phase from a fixed 9-phase build guide** that the user pastes one sub-step at a time. Implement each pasted spec **exactly as written** (versions, file names, token values, store shape) — do not improvise stack choices or "upgrade" dependencies. After a phase: verify the build, verify in the browser, then commit that phase before moving on.
 
-This project lives at its own repo root. The unrelated `~/Desktop/campusquest` repo is sometimes the terminal's working directory but must be left untouched — all portfolio files go here.
+**Working directory.** `~/Desktop/omer-portfolio` is the one and only directory for this project — every portfolio file goes here. The unrelated `~/Desktop/campusquest` repo is sometimes the terminal's working directory, but **never touch it**: don't read into it as if it were this project, and never write, edit, or commit anything there.
 
 ## Commands
 
