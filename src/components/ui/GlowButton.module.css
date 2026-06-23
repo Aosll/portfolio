@@ -1,0 +1,78 @@
+/* GlowButton — Phase 2.2. Variants + click ripple. */
+
+.btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: 12px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-body);
+  letter-spacing: 0.01em;
+  transition: all 0.4s var(--transition-smooth);
+}
+
+.label {
+  position: relative;
+  z-index: 1;
+}
+
+/* primary — solid accent-blue with glow */
+.primary {
+  background: var(--accent-blue);
+  color: #fff;
+  box-shadow: var(--shadow-glow-blue);
+}
+
+.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 50px rgba(79, 142, 247, 0.4);
+}
+
+/* outline — transparent + accent border, fills on hover */
+.outline {
+  background: transparent;
+  color: var(--accent-blue);
+  border: 1px solid var(--border-accent);
+}
+
+.outline:hover {
+  background: var(--accent-blue);
+  color: #fff;
+  border-color: var(--accent-blue);
+  box-shadow: var(--shadow-glow-blue);
+}
+
+/* ghost — minimal, subtle glass on hover */
+.ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.ghost:hover {
+  color: var(--text-primary);
+  background: var(--bg-glass);
+}
+
+/* click ripple */
+.ripple {
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(0);
+  animation: ripple 0.6s var(--transition-smooth);
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}

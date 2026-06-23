@@ -1,0 +1,37 @@
+/* TechTag — Phase 2.2. Pill-shaped icon + label chip with accent glow on hover. */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1;
+  color: var(--text-secondary);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  transition: all 0.3s var(--transition-smooth);
+  cursor: default;
+}
+
+.tag:hover {
+  transform: scale(1.05);
+  color: var(--text-primary);
+  border-color: var(--tag-color);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--tag-color) 35%, transparent);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.05em;
+  color: var(--tag-color);
+}
+
+.label {
+  letter-spacing: 0.02em;
+}
