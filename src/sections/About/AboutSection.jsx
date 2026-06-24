@@ -74,25 +74,32 @@ function TechOrbit() {
   const angleRef = useRef(0);
   const rafRef = useRef(null);
 
+  const COUNT = ORBIT_ICONS.length;
+  const RX = 110;
+  const RY = 36;
+
+  function positionIcons(icons, base) {
+    icons?.forEach((icon, i) => {
+      const angle = base + (i / COUNT) * Math.PI * 2;
+      const x = Math.cos(angle) * RX;
+      const y = Math.sin(angle) * RY;
+      const scale = 0.7 + 0.3 * ((Math.sin(angle) + 1) / 2);
+      const opacity = 0.5 + 0.5 * ((Math.sin(angle) + 1) / 2);
+      icon.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${scale})`;
+      icon.style.opacity = String(opacity);
+      icon.style.zIndex = Math.round(scale * 10);
+    });
+  }
+
   useEffect(() => {
     const icons = orbitRef.current?.querySelectorAll('[data-orbit-icon]');
-    const count = ORBIT_ICONS.length;
-    const rx = 110; // horizontal radius (ellipse)
-    const ry = 36;  // vertical radius (flat ellipse for 3D feel)
+
+    // Position immediately so icons never pile up at center before first rAF.
+    positionIcons(icons, angleRef.current);
 
     function tick() {
       if (!paused) angleRef.current += 0.005;
-      const base = angleRef.current;
-      icons?.forEach((icon, i) => {
-        const angle = base + (i / count) * Math.PI * 2;
-        const x = Math.cos(angle) * rx;
-        const y = Math.sin(angle) * ry;
-        const scale = 0.7 + 0.3 * ((Math.sin(angle) + 1) / 2); // depth scale
-        const opacity = 0.5 + 0.5 * ((Math.sin(angle) + 1) / 2);
-        icon.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${scale})`;
-        icon.style.opacity = String(opacity);
-        icon.style.zIndex = Math.round(scale * 10);
-      });
+      positionIcons(icons, angleRef.current);
       rafRef.current = requestAnimationFrame(tick);
     }
 
@@ -111,7 +118,15 @@ function TechOrbit() {
           key={icon.label}
           data-orbit-icon
           className={`${styles.orbitIcon} ${hovered === icon.label ? styles.orbitIconActive : ''}`}
-          style={{ '--icon-color': icon.color }}
+          style={{
+            '--icon-color': icon.color,
+            // Pre-position each icon on the ellipse so they're never piled at center.
+            transform: (() => {
+              const angle = (ORBIT_ICONS.indexOf(icon) / ORBIT_ICONS.length) * Math.PI * 2;
+              return `translate(calc(-50% + ${Math.cos(angle) * 110}px), calc(-50% + ${Math.sin(angle) * 36}px)) scale(${0.7 + 0.3 * ((Math.sin(angle) + 1) / 2)})`;
+            })(),
+            opacity: String(0.5 + 0.5 * ((Math.sin((ORBIT_ICONS.indexOf(icon) / ORBIT_ICONS.length) * Math.PI * 2) + 1) / 2)),
+          }}
           onMouseEnter={() => setHovered(icon.label)}
         >
           <span className={styles.orbitSymbol}>{icon.symbol}</span>
