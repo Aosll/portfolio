@@ -50,8 +50,14 @@
 
 .char {
   display: inline-block;
-  white-space: pre; /* keep the space between names visible */
   will-change: transform, opacity;
+}
+
+/* Each name is grouped so its character spans never break mid-word — lines
+   wrap only at the spaces between names (matters on narrow viewports). */
+.word {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .tagline {
@@ -139,6 +145,7 @@
 @media (max-width: 768px) {
   .content {
     margin-left: 0;
+    padding-left: var(--space-content);
     align-items: flex-start;
   }
   .scrollLabel {

@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, Fragment } from 'react';
 import gsap from 'gsap';
 import { FiChevronDown } from 'react-icons/fi';
 
@@ -36,8 +36,10 @@ export default function HeroSection() {
   const rootRef = useRef(null);
 
   // Turkish-locale uppercasing so "Dikici" → "DİKİCİ" (dotted capital I).
-  const nameChars = useMemo(
-    () => Array.from(SITE.name.toLocaleUpperCase('tr-TR')),
+  // Grouped by word so the per-character spans can't break mid-word on narrow
+  // viewports — lines wrap at the spaces between names instead.
+  const nameWords = useMemo(
+    () => SITE.name.toLocaleUpperCase('tr-TR').split(' ').map((w) => Array.from(w)),
     []
   );
 
@@ -123,16 +125,24 @@ export default function HeroSection() {
         </p>
 
         <h1 className={styles.name} aria-label={SITE.name}>
-          {nameChars.map((char, i) => (
-            <span
-              // eslint-disable-next-line react/no-array-index-key
-              key={`${char}-${i}`}
-              data-hero="char"
-              className={styles.char}
-              aria-hidden="true"
-            >
-              {char === ' ' ? ' ' : char}
-            </span>
+          {nameWords.map((word, wi) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Fragment key={wi}>
+              {wi > 0 ? ' ' : null}
+              <span className={styles.word}>
+                {word.map((char, ci) => (
+                  <span
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`${char}-${ci}`}
+                    data-hero="char"
+                    className={styles.char}
+                    aria-hidden="true"
+                  >
+                    {char}
+                  </span>
+                ))}
+              </span>
+            </Fragment>
           ))}
         </h1>
 
