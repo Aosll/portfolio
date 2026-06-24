@@ -1,0 +1,263 @@
+/* CertsSection — Phase 8.2 */
+
+.certs {
+  padding: var(--space-section) var(--space-content);
+}
+
+.inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 6vw, 4.5rem);
+}
+
+/* ─── Heading ──────────────────────────────────────────────────────────────── */
+
+.headingRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  margin-bottom: 0.5rem;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: var(--text-h1);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.countBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(0, 212, 255, 0.12);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: var(--accent-cyan);
+  flex-shrink: 0;
+}
+
+/* ─── Certs masonry grid ───────────────────────────────────────────────────── */
+
+.certsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+/* ─── Cert card ────────────────────────────────────────────────────────────── */
+
+.certCard {
+  padding: 1.4rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--cert-accent, var(--accent-cyan)) 20%, transparent);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  cursor: default;
+}
+
+.certCard:hover {
+  border-color: color-mix(in srgb, var(--cert-accent, var(--accent-cyan)) 55%, transparent);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--cert-accent, var(--accent-cyan)) 12%, transparent);
+  transform: translateY(-3px);
+}
+
+.certTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.certIcon {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.certYear {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.certTitle {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.certNote {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--cert-accent, var(--accent-cyan));
+  margin: 0;
+}
+
+.certIssuer {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0;
+  margin-top: auto;
+}
+
+/* ─── Subsection ───────────────────────────────────────────────────────────── */
+
+.subsection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ─── Education grid ───────────────────────────────────────────────────────── */
+
+.eduGrid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.eduCard {
+  padding: 1.6rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--edu-accent, var(--accent-cyan)) 22%, transparent);
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.eduCard:hover {
+  border-color: color-mix(in srgb, var(--edu-accent, var(--accent-cyan)) 50%, transparent);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--edu-accent, var(--accent-cyan)) 10%, transparent);
+}
+
+.eduCardPrimary {
+  /* no extra rules needed — variant="intense" handles the glass */
+}
+
+.eduIcon {
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.eduDegree {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin: 0;
+}
+
+.eduSchool {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--edu-accent, var(--accent-cyan));
+  margin: 0;
+}
+
+.eduDetail {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.eduPeriod {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin: 0;
+  margin-top: 0.25rem;
+}
+
+/* ─── Activities row ───────────────────────────────────────────────────────── */
+
+.activitiesRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.activityPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.activityPill:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+  background: rgba(0, 212, 255, 0.04);
+}
+
+.activityLabel {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.activityDuration {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--accent-cyan);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+/* ─── Responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .certsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .eduGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .certsGrid {
+    grid-template-columns: 1fr;
+  }
+}
