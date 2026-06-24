@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
+import { useForm, ValidationError } from '@formspree/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -190,6 +191,7 @@ function ContactCard({ card, index }) {
 // ─── Confetti burst ────────────────────────────────────────────────────────────
 
 function spawnConfetti(originEl) {
+  if (!originEl) return;
   const rect = originEl.getBoundingClientRect();
   const ox = rect.left + rect.width / 2;
   const oy = rect.top + rect.height / 2;
@@ -199,7 +201,7 @@ function spawnConfetti(originEl) {
     const el = document.createElement('div');
     el.style.cssText = `
       position:fixed; pointer-events:none; z-index:9999;
-      width:${4 + Math.random()*6}px; height:${4 + Math.random()*6}px;
+      width:${4 + Math.random() * 6}px; height:${4 + Math.random() * 6}px;
       border-radius:${Math.random() > 0.5 ? '50%' : '0'};
       background:${COLORS[i % COLORS.length]};
       left:${ox}px; top:${oy}px;
@@ -218,14 +220,12 @@ function spawnConfetti(originEl) {
 
 // ─── Contact form ──────────────────────────────────────────────────────────────
 
-const FORMSPREE_ID = 'xeokgkvk'; // Formspree form ID
-
 function ContactForm() {
   const ref    = useRef(null);
   const btnRef = useRef(null);
-  const [fields, setFields] = useState({ name: '', email: '', subject: '', message: '' });
-  const [status, setStatus] = useState('idle'); // idle | sending | done | error
+  const [state, handleSubmit] = useForm('xlgygkqr');
 
+  // Scroll-reveal animation
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -237,76 +237,67 @@ function ContactForm() {
     return () => t.kill();
   }, []);
 
-  const set = useCallback((k) => (e) => setFields(f => ({ ...f, [k]: e.target.value })), []);
+  // Confetti on success
+  useEffect(() => {
+    if (state.succeeded) spawnConfetti(btnRef.current);
+  }, [state.succeeded]);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (status === 'sending' || status === 'done') return;
-    setStatus('sending');
-
-    try {
-      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ name: fields.name, email: fields.email, subject: fields.subject, message: fields.message }),
-      });
-
-      if (res.ok) {
-        setStatus('done');
-        spawnConfetti(btnRef.current);
-        setFields({ name: '', email: '', subject: '', message: '' });
-      } else {
-        setStatus('error');
-      }
-    } catch {
-      setStatus('error');
-    }
-
-    if (status !== 'done') {
-      setTimeout(() => setStatus('idle'), 4000);
-    }
+  if (state.succeeded) {
+    return (
+      <GlassPanel ref={ref} variant="intense" className={styles.form}>
+        <div className={styles.successState}>
+          <span className={styles.successIcon}>✓</span>
+          <h3 className={styles.formTitle}>Message Sent!</h3>
+          <p className={styles.directNote}>Thanks for reaching out — I'll get back to you soon.</p>
+        </div>
+      </GlassPanel>
+    );
   }
 
   return (
     <GlassPanel ref={ref} variant="intense" className={styles.form}>
       <h3 className={styles.formTitle}>Send a Message</h3>
 
-      <form onSubmit={handleSubmit} noValidate className={styles.formGrid}>
+      <form onSubmit={handleSubmit} className={styles.formGrid}>
         <label className={styles.field}>
           <span className={styles.fieldLabel}>Name</span>
           <input
+            id="name" name="name" type="text" required
+            placeholder="Your name"
             className={styles.input}
-            type="text" required placeholder="Your name"
-            value={fields.name} onChange={set('name')}
           />
+          <ValidationError field="name" errors={state.errors} className={styles.fieldError} />
         </label>
 
         <label className={styles.field}>
           <span className={styles.fieldLabel}>Email</span>
           <input
+            id="email" name="email" type="email" required
+            placeholder="your@email.com"
             className={styles.input}
-            type="email" required placeholder="your@email.com"
-            value={fields.email} onChange={set('email')}
           />
+          <ValidationError field="email" errors={state.errors} className={styles.fieldError} />
         </label>
 
         <label className={`${styles.field} ${styles.fieldFull}`}>
           <span className={styles.fieldLabel}>Subject</span>
           <input
+            id="subject" name="subject" type="text" required
+            placeholder="What's it about?"
             className={styles.input}
-            type="text" required placeholder="What's it about?"
-            value={fields.subject} onChange={set('subject')}
           />
+          <ValidationError field="subject" errors={state.errors} className={styles.fieldError} />
         </label>
 
         <label className={`${styles.field} ${styles.fieldFull}`}>
           <span className={styles.fieldLabel}>Message</span>
           <textarea
-            className={`${styles.input} ${styles.textarea}`}
-            required placeholder="Tell me more..."
+            id="message" name="message" required
+            placeholder="Tell me more..."
             rows={5}
-            value={fields.message} onChange={set('message')}
+            className={`${styles.input} ${styles.textarea}`}
           />
+          <ValidationError field="message" errors={state.errors} className={styles.fieldError} />
         </label>
 
         <div className={`${styles.field} ${styles.fieldFull} ${styles.submitRow}`}>
@@ -314,18 +305,11 @@ function ContactForm() {
             ref={btnRef}
             type="submit"
             variant="primary"
-            disabled={status === 'sending' || status === 'done'}
+            disabled={state.submitting}
             className={styles.submitBtn}
           >
-            {status === 'sending' ? 'Sending…'
-              : status === 'done'    ? '✓ Message Sent!'
-              : status === 'error'   ? 'Try Again'
-              : 'Send Message →'}
+            {state.submitting ? 'Sending…' : 'Send Message →'}
           </GlowButton>
-
-          {status === 'error' && (
-            <p className={styles.errorNote}>Something went wrong — try emailing directly.</p>
-          )}
 
           <p className={styles.directNote}>
             Or email directly at{' '}

@@ -246,6 +246,29 @@
   text-decoration: underline;
 }
 
+.fieldError {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: #ef4444;
+  margin-top: 0.2rem;
+}
+
+.successState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.successIcon {
+  font-size: 2.5rem;
+  color: var(--accent-cyan);
+  line-height: 1;
+}
+
 /* ─── Footer ───────────────────────────────────────────────────────────────── */
 
 .footer {
