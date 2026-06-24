@@ -109,6 +109,12 @@
   opacity: 0;
 }
 
+/* Custom project component takes full slide — no default grid padding */
+.slideFull {
+  display: block;
+  padding: 0;
+}
+
 /* ─── Scene placeholder (replaced in 7.2–7.4) ─────────────────────────────── */
 
 .scenePlaceholder {
