@@ -1,0 +1,162 @@
+/* SkillsSection — Phase 6.2 */
+
+.skills {
+  padding: var(--space-section) var(--space-content);
+}
+
+.inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 6vw, 5rem);
+}
+
+/* ─── Heading ──────────────────────────────────────────────────────────────── */
+
+.headingBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 600px;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: var(--text-h1);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.sub {
+  font-size: var(--text-body);
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* ─── Radar ────────────────────────────────────────────────────────────────── */
+
+.radarWrap {
+  display: flex;
+  justify-content: center;
+}
+
+.radarSvg {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  overflow: visible;
+}
+
+/* ─── Tooltip (rendered inside foreignObject) ──────────────────────────────── */
+
+.tooltip {
+  background: rgba(13, 13, 26, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  width: 150px;
+}
+
+.tooltipName {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.tooltipRing {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tooltipDesc {
+  font-size: 0.66rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* ─── Skill bars ───────────────────────────────────────────────────────────── */
+
+.barsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.75rem 3rem;
+}
+
+.skillBar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.skillBarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.skillBarLabel {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.skillBarPct {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent-cyan);
+}
+
+.skillBarTechs {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.skillBarTrack {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.skillBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+}
+
+/* ─── Responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 700px) {
+  .barsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .radarSvg {
+    max-width: 340px;
+  }
+}
