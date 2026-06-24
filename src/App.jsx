@@ -23,12 +23,6 @@ const ContactSection     = lazy(() => import('@sections/Contact/ContactSection')
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Disable GSAP animations when user prefers reduced motion.
-if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  gsap.globalTimeline.timeScale(0);
-  ScrollTrigger.defaults({ toggleActions: 'play none none none' });
-}
-
 // Minimal inline fallback — invisible placeholder that holds section height.
 function SectionFallback() {
   return <div style={{ minHeight: '100vh' }} aria-hidden="true" />;
