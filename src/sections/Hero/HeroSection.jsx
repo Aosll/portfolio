@@ -4,7 +4,6 @@ import { FiChevronDown } from 'react-icons/fi';
 
 import { useGSAP } from '@hooks/useGSAP';
 import SceneManager from '@components/three/SceneManager';
-import AmbientParticles from '@components/three/AmbientParticles';
 import GlowButton from '@components/ui/GlowButton';
 import { SITE } from '@/data/site';
 
@@ -86,7 +85,6 @@ export default function HeroSection() {
       <div className={styles.canvas}>
         <SceneManager>
           <HeroScene />
-          <AmbientParticles />
         </SceneManager>
       </div>
 

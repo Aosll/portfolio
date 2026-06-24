@@ -1,9 +1,84 @@
+import { useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+
+import { COLORS_HEX } from '@utils/colors';
+import { useStore } from '@/store/useStore';
+import NeuralNetwork from '@components/three/NeuralNetwork';
+import HologramMaterial from '@components/three/HologramMaterial';
+import AmbientParticles from '@components/three/AmbientParticles';
+
 /**
- * HeroScene — Phase 1 stub. R3F scene for the hero, built in Phase 5.
- * Will mount inside the global <Canvas> (Phase 4) and render the intro
- * particle burst / camera move.
+ * HeroScene — Phase 5.2.
+ *
+ * The Hero's 3D environment: a neural network off to the right, three floating
+ * primitives rotating on independent axes, a fog-faded ground grid for depth,
+ * and the ambient particle field. The camera dollies back and tilts down as the
+ * page scrolls. Mounted inside the Hero's <SceneManager> Canvas.
  */
 export default function HeroScene() {
-  // Phase 5: <group> with particles, lights and animated camera target.
-  return null;
+  const netRef = useRef(null);
+  const icoRef = useRef(null);
+  const octaRef = useRef(null);
+  const torusRef = useRef(null);
+
+  useFrame((state) => {
+    const p = useStore.getState().scrollProgress;
+
+    // Scroll-driven camera: dolly z 5 → 8, tilt x 0 → -0.1.
+    const cam = state.camera;
+    cam.position.z = 5 + p * 3;
+    cam.rotation.x = p * -0.1;
+
+    // Each element rotates slowly on its own axes.
+    if (netRef.current) netRef.current.rotation.y += 0.0006;
+    if (icoRef.current) {
+      icoRef.current.rotation.x += 0.002;
+      icoRef.current.rotation.y += 0.003;
+    }
+    if (octaRef.current) {
+      octaRef.current.rotation.y += 0.004;
+      octaRef.current.rotation.z += 0.002;
+    }
+    if (torusRef.current) {
+      torusRef.current.rotation.z += 0.0015;
+      torusRef.current.rotation.x += 0.001;
+    }
+  });
+
+  return (
+    <>
+      {/* Linear fog → grid and wireframes fade out around distance 15. */}
+      <fog attach="fog" args={[COLORS_HEX.bgPrimary, 6, 16]} />
+
+      {/* 1. Neural network — right side, scaled down, slowly rotating. */}
+      <group ref={netRef} position={[6, 0, -2]} scale={0.8}>
+        <NeuralNetwork />
+      </group>
+
+      {/* 2. Floating geometric shapes. */}
+      <mesh ref={icoRef} position={[4, 3, -2]}>
+        <icosahedronGeometry args={[1.2, 0]} />
+        <meshBasicMaterial color={COLORS_HEX.accentCyan} wireframe />
+      </mesh>
+
+      <mesh ref={octaRef} position={[-4, -2, 0]}>
+        <octahedronGeometry args={[0.8, 0]} />
+        <HologramMaterial />
+      </mesh>
+
+      <mesh ref={torusRef} position={[0, 0, -6]}>
+        <torusGeometry args={[1.5, 0.28, 16, 60]} />
+        <meshBasicMaterial color={COLORS_HEX.accentPurple} wireframe />
+      </mesh>
+
+      {/* 3. Ground grid for perspective depth. */}
+      <gridHelper
+        args={[40, 40, COLORS_HEX.accentBlue, COLORS_HEX.accentBlue]}
+        position={[0, -4, 0]}
+      />
+
+      {/* 5. Ambient particle field. */}
+      <AmbientParticles />
+    </>
+  );
 }
