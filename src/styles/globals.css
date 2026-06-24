@@ -61,6 +61,27 @@ button {
   outline-offset: 3px;
 }
 
+/* Skip-to-content link — hidden until focused */
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.6rem 1.2rem;
+  background: var(--accent-cyan);
+  color: #000;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-radius: 0 0 6px 6px;
+  text-decoration: none;
+  transition: top 0.15s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -159,4 +180,29 @@ button {
   backdrop-filter: var(--blur-glass);
   -webkit-backdrop-filter: var(--blur-glass);
   color: var(--text-secondary);
+}
+
+/* ----------------------------------------------------------------------------
+   Global responsive — 768px stack, 480px compact
+---------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  /* Two-column grids → single column */
+  [class*="Grid"]:not([class*="featureGrid"]),
+  [class*="_eduGrid_"],
+  [class*="_certsGrid_"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* No horizontal overflow */
+  body { overflow-x: hidden; }
+}
+
+@media (max-width: 480px) {
+  /* Reduce base font size by ~15% */
+  html { font-size: 14px; }
+
+  /* Single column everywhere */
+  [class*="Grid"] {
+    grid-template-columns: 1fr !important;
+  }
 }
