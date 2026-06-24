@@ -1,3 +1,5 @@
+import { forwardRef } from 'react';
+
 import styles from './GlassPanel.module.css';
 
 /**
@@ -20,20 +22,19 @@ const VARIANT_CLASS = {
   subtle: styles.subtle,
 };
 
-export default function GlassPanel({
-  children,
-  className = '',
-  variant = 'default',
-  style,
-  ...rest
-}) {
+const GlassPanel = forwardRef(function GlassPanel(
+  { children, className = '', variant = 'default', style, ...rest },
+  ref
+) {
   const classes = [styles.panel, VARIANT_CLASS[variant] ?? '', className]
     .filter(Boolean)
     .join(' ');
 
   return (
-    <div className={classes} style={style} {...rest}>
+    <div ref={ref} className={classes} style={style} {...rest}>
       {children}
     </div>
   );
-}
+});
+
+export default GlassPanel;
