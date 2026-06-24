@@ -1,0 +1,147 @@
+/* HeroSection — Phase 5.1: cinematic entry layout. */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center; /* content vertically centered */
+  overflow: hidden;
+}
+
+/* Canvas(0) / Particles(1) — fullscreen WebGL backdrop behind the content. */
+.canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Content(10) — capped width, pushed slightly left of center. */
+.content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 760px;
+  margin-left: clamp(1.5rem, 8vw, 9rem);
+  padding-right: var(--space-content);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--text-hero);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin: -0.25rem 0;
+}
+
+.char {
+  display: inline-block;
+  white-space: pre; /* keep the space between names visible */
+  will-change: transform, opacity;
+}
+
+.tagline {
+  font-style: italic;
+  font-size: var(--text-h3);
+  color: var(--text-secondary);
+  max-width: 34ch;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.ctaItem {
+  display: inline-flex;
+}
+
+/* Scrolling tech ticker. */
+.ticker {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin-top: 0.75rem;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.tickerTrack {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.5rem;
+  white-space: nowrap;
+  animation: heroTicker 22s linear infinite;
+}
+
+.tickerItem {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+@keyframes heroTicker {
+  to {
+    transform: translateX(-50%); /* track holds two copies → seamless loop */
+  }
+}
+
+/* Scroll cue pinned to the bottom center. */
+.scrollCue {
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  bottom: clamp(1.5rem, 4vh, 3rem);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-secondary);
+}
+
+.chevron {
+  font-size: 1.4rem;
+  color: var(--accent-cyan);
+  animation: heroBounce 1.8s var(--transition-smooth) infinite;
+}
+
+.scrollLabel {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.24em;
+}
+
+@keyframes heroBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.7; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+    align-items: flex-start;
+  }
+  .scrollLabel {
+    display: none;
+  }
+}
