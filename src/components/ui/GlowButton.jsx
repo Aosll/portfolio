@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import styles from './GlowButton.module.css';
 
 /**
@@ -18,13 +18,13 @@ const VARIANT_CLASS = {
   ghost: 'ghost',
 };
 
-export default function GlowButton({
+const GlowButton = forwardRef(function GlowButton({
   children,
   variant = 'primary',
   className = '',
   onClick,
   ...rest
-}) {
+}, ref) {
   const [ripples, setRipples] = useState([]);
 
   const handleClick = (e) => {
@@ -44,6 +44,7 @@ export default function GlowButton({
 
   return (
     <button
+      ref={ref}
       className={[styles.btn, variantClass, className].filter(Boolean).join(' ')}
       onClick={handleClick}
       {...rest}
@@ -57,8 +58,10 @@ export default function GlowButton({
           onAnimationEnd={() =>
             setRipples((list) => list.filter((it) => it.id !== r.id))
           }
-        />
-      ))}
+            />
+        ))}
     </button>
   );
-}
+});
+
+export default GlowButton;
