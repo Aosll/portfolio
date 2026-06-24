@@ -6,6 +6,7 @@ import { useGSAP } from '@hooks/useGSAP';
 import SceneManager from '@components/three/SceneManager';
 import GlowButton from '@components/ui/GlowButton';
 import { SITE } from '@/data/site';
+import { useStore } from '@/store/useStore';
 
 import HeroScene from './HeroScene';
 import styles from './HeroSection.module.css';
@@ -70,6 +71,34 @@ export default function HeroSection() {
           { y: -24, autoAlpha: 0, duration: 0.7, ease: 'back.out(2)' },
           1.8
         );
+    },
+    { scope: rootRef }
+  );
+
+  // Pinned exit: as the user scrolls out, content flies up + fades while the 3D
+  // scene scales down and the particles contract (driven via the store). Pin for
+  // an extra 30% of scroll travel, then normal scroll resumes into About.
+  useGSAP(
+    () => {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;
+
+      const setHeroExit = useStore.getState().setHeroExit;
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: rootRef.current,
+          start: 'top top',
+          end: '+=30%',
+          pin: true,
+          scrub: 0.6, // 0.6s smooth catch-up
+          onUpdate: (self) => setHeroExit(self.progress),
+        },
+      });
+      tl.to(`.${styles.content}`, { y: -120, autoAlpha: 0, ease: 'none' }, 0).to(
+        `.${styles.scrollCue}`,
+        { y: -40, autoAlpha: 0, ease: 'none' },
+        0
+      );
     },
     { scope: rootRef }
   );

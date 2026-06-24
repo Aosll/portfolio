@@ -15,6 +15,7 @@ export const useStore = create((set) => ({
   loadingProgress: 0, // 0–100
   activeProject: null, // project ID currently focused, or null
   isMobile: false,
+  heroExit: 0, // 0→1 progress of the Hero pin/exit transition (Phase 5.3)
 
   // --- Actions ---
   setCurrentSection: (currentSection) => set({ currentSection }),
@@ -24,6 +25,7 @@ export const useStore = create((set) => ({
   setLoadingProgress: (loadingProgress) => set({ loadingProgress }),
   setActiveProject: (activeProject) => set({ activeProject }),
   setIsMobile: (isMobile) => set({ isMobile }),
+  setHeroExit: (heroExit) => set({ heroExit }),
 }));
 
 export default useStore;
