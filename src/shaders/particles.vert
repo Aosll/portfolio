@@ -1,23 +1,26 @@
-// particles.vert — Phase 1 placeholder (expanded in Phase 4: WebGL scene engine)
+// particles.vert — Phase 4.2: global ambient particle field.
 uniform float uTime;
-uniform float uSize;
+uniform float uScroll;
 uniform float uPixelRatio;
 
-attribute float aScale;
+attribute vec3 aColor;
 
 varying vec3 vColor;
 
 void main() {
+  vColor = aColor;
+
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
-  // Gentle ambient drift; replaced by real field motion in Phase 4.
-  modelPosition.y += sin(uTime + modelPosition.x * 0.5) * 0.1;
+  // Scroll-driven drift: the whole field slides as the page scrolls.
+  modelPosition.y += uScroll * 8.0;
 
   vec4 viewPosition = viewMatrix * modelPosition;
   gl_Position = projectionMatrix * viewPosition;
 
-  gl_PointSize = uSize * aScale * uPixelRatio;
+  // Base size + per-particle twinkle, attenuated by distance (perspective).
+  float base = 55.0;
+  float twinkle = sin(uTime + position.x) * 18.0;
+  gl_PointSize = (base + twinkle) * uPixelRatio;
   gl_PointSize *= (1.0 / -viewPosition.z);
-
-  vColor = color;
 }
