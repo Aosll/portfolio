@@ -340,7 +340,7 @@ function Footer() {
             LinkedIn
           </a>
           <span className={styles.footerDivider} aria-hidden="true">·</span>
-          <a href="/cv.pdf" download className={styles.footerLink}>
+          <a href="/Omer_Efe_Dikici_CV.pdf" download className={styles.footerLink}>
             CV Download
           </a>
         </div>

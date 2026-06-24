@@ -20,7 +20,7 @@ export const SITE = {
     'React',
     'Three.js',
   ],
-  cv: '/cv.pdf', // drop the file in /public to enable the Download CV button
+  cv: '/Omer_Efe_Dikici_CV.pdf', // file lives in /public
   tagline: 'Embedded systems, IoT security & immersive software.',
   stack: ['Three.js', 'GSAP', 'Lenis', 'WebGL', 'React'],
   location: 'Türkiye',
