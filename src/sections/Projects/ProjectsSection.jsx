@@ -4,12 +4,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { PROJECTS } from '@/data/projects';
 import IlterAkkeProject from './IlterAkke/IlterAkkeProject';
+import FakeIoTProject   from './FakeIoT/FakeIoTProject';
 
 import styles from './ProjectsSection.module.css';
 
 // Per-project custom scenes (populated phase by phase)
 const PROJECT_COMPONENTS = {
-  'ilter-akke': IlterAkkeProject,
+  'ilter-akke':      IlterAkkeProject,
+  'fakeiot-honeypot': FakeIoTProject,
 };
 
 gsap.registerPlugin(ScrollTrigger);
