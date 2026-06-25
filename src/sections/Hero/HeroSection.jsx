@@ -1,4 +1,4 @@
-import { useMemo, useRef, Fragment } from 'react';
+import { useMemo, useRef } from 'react';
 import gsap from 'gsap';
 import { FiChevronDown } from 'react-icons/fi';
 
@@ -35,13 +35,13 @@ function scrollToSection(id) {
 export default function HeroSection() {
   const rootRef = useRef(null);
 
-  // Turkish-locale uppercasing so "Dikici" → "DİKİCİ" (dotted capital I).
-  // Grouped by word so the per-character spans can't break mid-word on narrow
-  // viewports — lines wrap at the spaces between names instead.
-  const nameWords = useMemo(
-    () => SITE.name.toLocaleUpperCase('tr-TR').split(' ').map((w) => Array.from(w)),
-    []
-  );
+  // Turkish-locale uppercasing so "Dikici" → "DİKİCİ" (dotted capital I). Split
+  // into two display lines (all-but-last words, then the surname) for the
+  // knockout title.
+  const nameLines = useMemo(() => {
+    const parts = SITE.name.toLocaleUpperCase('tr-TR').split(' ');
+    return [parts.slice(0, -1).join(' '), parts[parts.length - 1]];
+  }, []);
 
   // Duplicated tech list so the ticker can loop seamlessly.
   const ticker = useMemo(() => [...SITE.heroTech, ...SITE.heroTech], []);
@@ -57,8 +57,8 @@ export default function HeroSection() {
       const tl = gsap.timeline({ delay: 0.4, defaults: { ease: 'power3.out' } });
       tl.from('[data-hero="label"]', { y: 24, autoAlpha: 0, duration: 0.7 }, 0.0)
         .from(
-          '[data-hero="char"]',
-          { y: -48, autoAlpha: 0, stagger: 0.04, duration: 0.7, ease: 'back.out(1.4)' },
+          '[data-hero="name"]',
+          { y: -28, autoAlpha: 0, scale: 1.06, transformOrigin: 'left center', duration: 0.85, ease: 'power3.out' },
           0.3
         )
         .from('[data-hero="tagline"]', { x: 48, autoAlpha: 0, duration: 0.8 }, 0.8)
@@ -124,27 +124,33 @@ export default function HeroSection() {
           {SITE.heroLabel}
         </p>
 
-        <h1 className={styles.name} aria-label={SITE.name}>
-          {nameWords.map((word, wi) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Fragment key={wi}>
-              {wi > 0 ? ' ' : null}
-              <span className={styles.word}>
-                {word.map((char, ci) => (
-                  <span
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`${char}-${ci}`}
-                    data-hero="char"
-                    className={styles.char}
-                    aria-hidden="true"
-                  >
-                    {char}
-                  </span>
-                ))}
-              </span>
-            </Fragment>
-          ))}
-        </h1>
+        {/* Name as a knockout: a dim veil over the live scene, cut into the
+            shape of the letters, so the WebGL scene shows through the type. An
+            outline keeps it legible. Real <h1> kept for semantics + a11y. */}
+        <h1 className={styles.srName}>{SITE.name}</h1>
+
+        <svg
+          data-hero="name"
+          className={styles.nameSvg}
+          viewBox="0 0 720 250"
+          preserveAspectRatio="xMinYMid meet"
+          aria-hidden="true"
+        >
+          <defs>
+            <radialGradient id="heroNameDim" cx="32%" cy="50%" r="82%">
+              <stop offset="0%" stopColor="#0a0a0f" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#0a0a0f" stopOpacity="0.12" />
+            </radialGradient>
+            <mask id="heroNameCut">
+              <rect width="720" height="250" fill="#fff" />
+              <text x="0" y="104" className={styles.nameMaskText}>{nameLines[0]}</text>
+              <text x="0" y="224" className={styles.nameMaskText}>{nameLines[1]}</text>
+            </mask>
+          </defs>
+          <rect width="720" height="250" fill="url(#heroNameDim)" mask="url(#heroNameCut)" />
+          <text x="0" y="104" className={styles.nameOutline}>{nameLines[0]}</text>
+          <text x="0" y="224" className={styles.nameOutline}>{nameLines[1]}</text>
+        </svg>
 
         <p data-hero="tagline" className={styles.tagline}>
           {SITE.heroTagline}
