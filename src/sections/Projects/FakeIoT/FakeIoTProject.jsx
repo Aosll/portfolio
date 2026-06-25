@@ -224,9 +224,10 @@ const LOG_LINES = [
   { t: 'INFO',  m: 'ESP32 heartbeat OK — uptime 14h 32m'                      },
 ];
 
-function TerminalLog() {
+function TerminalLog({ isActive = true }) {
   const [lines, setLines] = useState(LOG_LINES.slice(0, 5));
   useEffect(() => {
+    if (!isActive) return undefined;
     let idx = 5;
     const id = setInterval(() => {
       setLines(prev => {
@@ -236,7 +237,7 @@ function TerminalLog() {
       });
     }, 1800);
     return () => clearInterval(id);
-  }, []);
+  }, [isActive]);
 
   return (
     <div className={styles.terminal} aria-label="Attack log">
@@ -287,7 +288,7 @@ const TAGS = ['ESP32', 'Flask', 'Python', 'Kali Linux', 'Nmap', 'Hydra', 'Wiresh
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 
-export default function FakeIoTProject() {
+export default function FakeIoTProject({ isActive = true }) {
   return (
     <div className={styles.root}>
       {/* Left: content */}
@@ -348,15 +349,16 @@ export default function FakeIoTProject() {
       <div className={styles.right}>
         <div className={styles.scene}>
           <Canvas
+            frameloop={isActive ? 'always' : 'never'}
             camera={{ fov: 55, position: [0, 2.5, 7] }}
-            gl={{ antialias: true, alpha: true }}
-            dpr={[1, 2]}
+            gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+            dpr={[1, 1.5]}
             style={{ width: '100%', height: '100%' }}
           >
             <FakeIoTScene />
           </Canvas>
         </div>
-        <TerminalLog />
+        <TerminalLog isActive={isActive} />
       </div>
     </div>
   );

@@ -221,7 +221,7 @@ const TAGS = ['ESP32', 'TinyML', 'TensorFlow Lite', 'Edge Impulse', 'ESP-NOW', '
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 
-export default function IlterAkkeProject() {
+export default function IlterAkkeProject({ isActive = true }) {
   return (
     <div className={styles.root}>
       {/* Left: content panel */}
@@ -281,9 +281,10 @@ export default function IlterAkkeProject() {
       {/* Right: 3D scene */}
       <div className={styles.scene}>
         <Canvas
+          frameloop={isActive ? 'always' : 'never'}
           camera={{ fov: 55, position: [0, 0.5, 5.5] }}
-          gl={{ antialias: true, alpha: true }}
-          dpr={[1, 2]}
+          gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+          dpr={[1, 1.5]}
           style={{ width: '100%', height: '100%' }}
         >
           <IlterAkkeScene />

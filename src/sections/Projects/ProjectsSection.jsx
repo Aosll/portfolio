@@ -59,7 +59,7 @@ function ProgressBar({ total, fillRef }) {
 
 // ─── Project slide ────────────────────────────────────────────────────────────
 
-function ProjectSlide({ project, index, registerSlide }) {
+function ProjectSlide({ project, index, registerSlide, isActive }) {
   const CustomComponent = PROJECT_COMPONENTS[project.id];
 
   return (
@@ -78,7 +78,7 @@ function ProjectSlide({ project, index, registerSlide }) {
     >
       {CustomComponent ? (
         // Full custom layout (content + 3D scene managed by the component)
-        <CustomComponent />
+        <CustomComponent isActive={isActive} />
       ) : (
         <>
           {/* 3D scene placeholder */}
@@ -228,6 +228,7 @@ export default function ProjectsSection() {
               project={p}
               index={i}
               registerSlide={registerSlide}
+              isActive={active === i}
             />
           ))}
         </div>

@@ -308,7 +308,7 @@ const TAGS = ['Swift', 'SwiftUI', 'SpriteKit', 'SwiftData', 'iOS'];
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 
-export default function CampusQuestProject() {
+export default function CampusQuestProject({ isActive = true }) {
   return (
     <div className={styles.root}>
       {/* Left: content */}
@@ -362,9 +362,10 @@ export default function CampusQuestProject() {
       {/* Right: 3D scene */}
       <div className={styles.scene}>
         <Canvas
+          frameloop={isActive ? 'always' : 'never'}
           camera={{ fov: 50, position: [0, 0.5, 5.5] }}
-          gl={{ antialias: true, alpha: true }}
-          dpr={[1, 2]}
+          gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+          dpr={[1, 1.5]}
           style={{ width: '100%', height: '100%' }}
         >
           <CampusQuestScene />
