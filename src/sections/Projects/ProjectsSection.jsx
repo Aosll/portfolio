@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { PROJECTS } from '@/data/projects';
+import { prefersReducedMotion } from '@utils/motion';
 import IlterAkkeProject   from './IlterAkke/IlterAkkeProject';
 import FakeIoTProject     from './FakeIoT/FakeIoTProject';
 import CampusQuestProject from './CampusQuest/CampusQuestProject';
@@ -65,6 +66,11 @@ function ProjectSlide({ project, visible }) {
 
   useEffect(() => {
     if (!ref.current) return;
+    // Reduced motion: swap projects instantly instead of cross-fading.
+    if (prefersReducedMotion()) {
+      gsap.set(ref.current, { autoAlpha: visible ? 1 : 0, scale: visible ? 1 : 0.97 });
+      return;
+    }
     gsap.to(ref.current, {
       autoAlpha: visible ? 1 : 0,
       scale: visible ? 1 : 0.97,

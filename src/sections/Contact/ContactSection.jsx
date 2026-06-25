@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import GlassPanel from '@components/ui/GlassPanel';
 import GlowButton from '@components/ui/GlowButton';
+import { prefersReducedMotion } from '@utils/motion';
 
 import styles from './ContactSection.module.css';
 
@@ -146,6 +147,7 @@ function ContactCard({ card, index }) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (prefersReducedMotion()) return; // leave content visible, skip the reveal
     gsap.set(el, { autoAlpha: 0, y: 24 });
     const t = ScrollTrigger.create({
       trigger: el, start: 'top 88%', once: true,
@@ -192,6 +194,7 @@ function ContactCard({ card, index }) {
 
 function spawnConfetti(originEl) {
   if (!originEl) return;
+  if (prefersReducedMotion()) return; // no celebratory burst for reduced-motion users
   const rect = originEl.getBoundingClientRect();
   const ox = rect.left + rect.width / 2;
   const oy = rect.top + rect.height / 2;
@@ -229,6 +232,7 @@ function ContactForm() {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (prefersReducedMotion()) return; // leave content visible, skip the reveal
     gsap.set(el, { autoAlpha: 0, y: 30 });
     const t = ScrollTrigger.create({
       trigger: el, start: 'top 85%', once: true,
@@ -360,6 +364,7 @@ export default function ContactSection() {
   const subRef     = useRef(null);
 
   useEffect(() => {
+    if (prefersReducedMotion()) return; // leave headings visible, skip the reveal
     [headRef, accentRef, subRef].forEach((r, i) => {
       if (!r.current) return;
       gsap.set(r.current, { autoAlpha: 0, y: 30 });

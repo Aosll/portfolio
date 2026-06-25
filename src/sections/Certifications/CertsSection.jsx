@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import GlassPanel from '@components/ui/GlassPanel';
+import { prefersReducedMotion } from '@utils/motion';
 
 import styles from './CertsSection.module.css';
 
@@ -98,6 +99,7 @@ function CertCard({ cert, index }) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (prefersReducedMotion()) return; // leave content visible, skip the reveal
     gsap.set(el, { autoAlpha: 0, y: 28 });
     const trigger = ScrollTrigger.create({
       trigger: el,
@@ -135,6 +137,7 @@ function EduCard({ edu, index }) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (prefersReducedMotion()) return; // leave content visible, skip the reveal
     gsap.set(el, { autoAlpha: 0, y: 24 });
     const trigger = ScrollTrigger.create({
       trigger: el,
@@ -173,6 +176,7 @@ export default function CertsSection() {
   const actLabelRef  = useRef(null);
 
   useEffect(() => {
+    if (prefersReducedMotion()) return; // leave headings visible, skip the reveal
     const els = [labelRef, headingRef, eduLabelRef, actLabelRef];
     els.forEach((r, i) => {
       if (!r.current) return;
