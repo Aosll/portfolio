@@ -147,16 +147,13 @@ export default function ProjectsSection() {
 
       slidesRef.current.forEach((slide, i) => {
         if (!slide) return;
-        const distance = Math.abs(sequence - i);
-        const opacity = reduce
-          ? (idx === i ? 1 : 0)
-          : Math.max(0, Math.min(1, 1 - distance));
         const isInteractive = idx === i;
+        const opacity = isInteractive ? 1 : 0;
         slide.style.opacity = String(opacity);
-        slide.style.visibility = opacity > 0.02 ? 'visible' : 'hidden';
+        slide.style.visibility = isInteractive ? 'visible' : 'hidden';
         slide.style.pointerEvents = isInteractive ? 'auto' : 'none';
-        slide.style.transform = `scale(${0.965 + opacity * 0.035})`;
-        slide.style.zIndex = isInteractive ? '2' : opacity > 0.02 ? '1' : '0';
+        slide.style.transform = `scale(${isInteractive || reduce ? 1 : 0.965})`;
+        slide.style.zIndex = isInteractive ? '2' : '0';
         if (isInteractive) {
           slide.removeAttribute('aria-hidden');
         } else {
@@ -178,7 +175,7 @@ export default function ProjectsSection() {
       // Each project gets 100vh of scroll travel (3 projects = 200vh extra).
       end: `+=${(sections - 1) * 100}%`,
       pin: stickyRef.current,
-      scrub: 0.4,
+      scrub: true,
       onUpdate(self) {
         renderProgress(self.progress);
       },
