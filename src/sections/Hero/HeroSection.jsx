@@ -137,9 +137,10 @@ export default function HeroSection() {
           aria-hidden="true"
         >
           <defs>
-            <radialGradient id="heroNameDim" cx="32%" cy="50%" r="82%">
-              <stop offset="0%" stopColor="#0a0a0f" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="#0a0a0f" stopOpacity="0.12" />
+            <radialGradient id="heroNameDim" cx="32%" cy="50%" r="88%">
+              <stop offset="0%" stopColor="#0a0a0f" stopOpacity="0.97" />
+              <stop offset="58%" stopColor="#0a0a0f" stopOpacity="0.78" />
+              <stop offset="100%" stopColor="#0a0a0f" stopOpacity="0.34" />
             </radialGradient>
             <mask id="heroNameCut">
               <rect width="720" height="250" fill="#fff" />
