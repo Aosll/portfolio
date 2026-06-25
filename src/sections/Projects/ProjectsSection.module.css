@@ -106,8 +106,13 @@
   align-items: center;
   gap: 4rem;
   padding: 2rem var(--space-content) 3rem;
-  visibility: hidden; /* GSAP autoAlpha manages this */
+  visibility: hidden; /* inline scroll state manages visibility */
   opacity: 0;
+  transform-origin: center;
+  transition:
+    opacity 0.18s linear,
+    transform 0.18s linear,
+    visibility 0.18s linear;
 }
 
 /* Custom project component takes full slide — no default grid padding */

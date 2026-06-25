@@ -3,7 +3,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { PROJECTS } from '@/data/projects';
-import { prefersReducedMotion } from '@utils/motion';
 import IlterAkkeProject   from './IlterAkke/IlterAkkeProject';
 import FakeIoTProject     from './FakeIoT/FakeIoTProject';
 import CampusQuestProject from './CampusQuest/CampusQuestProject';
@@ -41,13 +40,12 @@ function PillNav({ active, onChange }) {
 
 // ─── Progress bar ─────────────────────────────────────────────────────────────
 
-function ProgressBar({ active, total, intraProgress }) {
-  // Shows which project is active + how far through it
+function ProgressBar({ total, scrollProgress }) {
+  // Shows the complete pinned-scroll journey through the project sequence.
   const segW = 100 / total;
-  const fill  = segW * active + segW * intraProgress;
   return (
     <div className={styles.progressTrack} aria-hidden="true">
-      <div className={styles.progressFill} style={{ width: `${fill}%` }} />
+      <div className={styles.progressFill} style={{ width: `${scrollProgress * 100}%` }} />
       {PROJECTS.map((p, i) => (
         <div
           key={p.id}
@@ -61,28 +59,28 @@ function ProgressBar({ active, total, intraProgress }) {
 
 // ─── Project slide ────────────────────────────────────────────────────────────
 
-function ProjectSlide({ project, visible }) {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    // Reduced motion: swap projects instantly instead of cross-fading.
-    if (prefersReducedMotion()) {
-      gsap.set(ref.current, { autoAlpha: visible ? 1 : 0, scale: visible ? 1 : 0.97 });
-      return;
-    }
-    gsap.to(ref.current, {
-      autoAlpha: visible ? 1 : 0,
-      scale: visible ? 1 : 0.97,
-      duration: 0.55,
-      ease: 'power2.inOut',
-    });
-  }, [visible]);
-
+function ProjectSlide({ project, index, active, sequenceProgress }) {
   const CustomComponent = PROJECT_COMPONENTS[project.id];
+  const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const distance = Math.abs(sequenceProgress - index);
+  const opacity = reduce
+    ? (active === index ? 1 : 0)
+    : Math.max(0, Math.min(1, 1 - distance));
+  const isInteractive = active === index;
 
   return (
-    <div ref={ref} className={`${styles.slide} ${CustomComponent ? styles.slideFull : ''}`} style={{ '--accent': project.accent }}>
+    <div
+      className={`${styles.slide} ${CustomComponent ? styles.slideFull : ''}`}
+      style={{
+        '--accent': project.accent,
+        opacity,
+        visibility: opacity > 0.02 ? 'visible' : 'hidden',
+        pointerEvents: isInteractive ? 'auto' : 'none',
+        transform: `scale(${0.965 + opacity * 0.035})`,
+        zIndex: isInteractive ? 2 : opacity > 0.02 ? 1 : 0,
+      }}
+      aria-hidden={isInteractive ? undefined : 'true'}
+    >
       {CustomComponent ? (
         // Full custom layout (content + 3D scene managed by the component)
         <CustomComponent />
@@ -130,11 +128,12 @@ export default function ProjectsSection() {
   const rootRef        = useRef(null);
   const stickyRef      = useRef(null);
   const [active, setActive]           = useState(0);
-  const [intraProgress, setIntra]     = useState(0);
+  const [scrollProgress, setProgress] = useState(0);
 
   // Sticky scroll: pin the section, drive active project from scroll position.
   useEffect(() => {
     const sections = PROJECTS.length;
+    const stops = Math.max(sections - 1, 1);
     const trigger  = ScrollTrigger.create({
       trigger: rootRef.current,
       start: 'top top',
@@ -143,11 +142,10 @@ export default function ProjectsSection() {
       pin: stickyRef.current,
       scrub: 0.4,
       onUpdate(self) {
-        const total     = self.progress * sections;       // 0 → N
-        const idx       = Math.min(Math.floor(total), sections - 1);
-        const intra     = total - Math.floor(total);     // 0→1 within current
+        const sequence = self.progress * stops; // 0 -> last project index
+        const idx = Math.min(Math.round(sequence), sections - 1);
         setActive(idx);
-        setIntra(idx === sections - 1 ? 1 : intra);
+        setProgress(self.progress);
       },
     });
 
@@ -160,7 +158,8 @@ export default function ProjectsSection() {
     if (!el) return;
     const rect     = el.getBoundingClientRect();
     const totalH   = el.offsetHeight - window.innerHeight;
-    const segH     = totalH / PROJECTS.length;
+    const stops    = Math.max(PROJECTS.length - 1, 1);
+    const segH     = totalH / stops;
     const target   = window.scrollY + rect.top + segH * i;
     if (window.lenis?.scrollTo) {
       window.lenis.scrollTo(target);
@@ -183,13 +182,19 @@ export default function ProjectsSection() {
         {/* Top chrome */}
         <div className={styles.chrome}>
           <PillNav active={active} onChange={jumpToProject} />
-          <ProgressBar active={active} total={PROJECTS.length} intraProgress={intraProgress} />
+          <ProgressBar total={PROJECTS.length} scrollProgress={scrollProgress} />
         </div>
 
         {/* Project slides — stacked, crossfade */}
         <div className={styles.slides}>
           {PROJECTS.map((p, i) => (
-            <ProjectSlide key={p.id} project={p} visible={i === active} />
+            <ProjectSlide
+              key={p.id}
+              project={p}
+              index={i}
+              active={active}
+              sequenceProgress={scrollProgress * Math.max(PROJECTS.length - 1, 1)}
+            />
           ))}
         </div>
       </div>
