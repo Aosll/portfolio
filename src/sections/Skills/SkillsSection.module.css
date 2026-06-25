@@ -57,9 +57,15 @@
 
 .radarSvg {
   width: 100%;
-  max-width: 500px;
+  max-width: 620px;
   height: auto;
   overflow: visible;
+}
+
+.radarCallout {
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .radarLegend {

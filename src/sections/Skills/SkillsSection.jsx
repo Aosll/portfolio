@@ -47,8 +47,8 @@ const RING_RADII  = [66, 106, 146, 186];     // SVG units from center
 const CX = 220, CY = 220, SIZE = 440;          // SVG viewport
 
 // Deterministic layout: within each quadrant, sort techs inner→outer by ring and
-// spread them evenly across the wedge. Dots end up on a tidy spiral, so neither
-// the dots nor their labels collide (the old hash-jitter caused the overlap).
+// spread them evenly across the wedge. Each dot also gets a compact callout so
+// there are no anonymous points floating around the radar.
 const LAYOUT = (() => {
   const byQuad = [[], [], [], []];
   TECHS.forEach((t) => byQuad[t.quad].push(t));
@@ -65,7 +65,10 @@ const LAYOUT = (() => {
       out[t.name] = {
         x: CX + Math.cos(angle) * r,
         y: CY + Math.sin(angle) * r,
-        above: i % 2 === 0, // alternate label side for extra breathing room
+        angle,
+        labelX: CX + Math.cos(angle) * (r + 25),
+        labelY: CY + Math.sin(angle) * (r + 25) + (i % 2 === 0 ? -4 : 4),
+        anchor: Math.cos(angle) >= 0 ? 'start' : 'end',
       };
     });
   });
@@ -154,18 +157,18 @@ function Tooltip({ tech, x, y }) {
 function TechRadar() {
   const [hovered, setHovered] = useState(null); // tech name
   const [hovQuad, setHovQuad] = useState(null); // quad index
-  const dotsRef  = useRef([]);
+  const calloutsRef = useRef([]);
   const radarRef = useRef(null);
 
-  // Dots fly in from the centre on reveal (skipped under reduced-motion, where
-  // they simply appear in place so the radar is never left blank).
+  // Reveal the complete dot+label callouts together so no point appears detached
+  // from its skill name.
   useEffect(() => {
     if (!radarRef.current) return undefined;
 
     if (prefersReducedMotion()) {
-      dotsRef.current.forEach((el) => {
+      calloutsRef.current.forEach((el) => {
         if (!el) return;
-        gsap.set(el, { attr: { cx: el.dataset.tx, cy: el.dataset.ty }, opacity: 1, scale: 1 });
+        gsap.set(el, { opacity: 1, scale: 1 });
       });
       return undefined;
     }
@@ -175,21 +178,25 @@ function TechRadar() {
       start: 'top 80%',
       once: true,
       onEnter: () => {
-        dotsRef.current.forEach((el, i) => {
+        calloutsRef.current.forEach((el, i) => {
           if (!el) return;
           gsap.fromTo(el,
-            { attr: { cx: CX, cy: CY }, opacity: 0, scale: 0 },
-            { attr: { cx: el.dataset.tx, cy: el.dataset.ty }, opacity: 1, scale: 1,
-              duration: 0.7, delay: i * 0.04, ease: 'back.out(1.5)',
+            { opacity: 0, scale: 0.92 },
+            {
+              opacity: 1,
+              scale: 1,
+              duration: 0.45,
+              delay: i * 0.025,
+              ease: 'power2.out',
               transformOrigin: 'center center',
             }
           );
         });
       },
     });
-    dotsRef.current.forEach((el) => {
+    calloutsRef.current.forEach((el) => {
       if (!el) return;
-      gsap.set(el, { attr: { cx: CX, cy: CY }, opacity: 0, scale: 0 });
+      gsap.set(el, { opacity: 0, scale: 0.92 });
     });
     return () => trigger.kill();
   }, []);
@@ -288,20 +295,32 @@ function TechRadar() {
           );
         })}
 
-        {/* Tech dots. The always-visible labels live in the legend below so the
-            radar itself stays readable at every viewport size. */}
+        {/* Tech dots + callouts */}
         {TECHS.map((tech, i) => {
           const pos    = LAYOUT[tech.name];
           const color  = RING_COLORS[tech.ring];
           const isHov  = hovered === tech.name;
+          const labelPad = pos.anchor === 'start' ? 5 : -5;
           return (
-            <g key={tech.name}>
+            <g
+              key={tech.name}
+              ref={(el) => { calloutsRef.current[i] = el; }}
+              className={styles.radarCallout}
+              onMouseEnter={() => { setHovered(tech.name); setHovQuad(tech.quad); }}
+              onMouseLeave={() => { setHovered(null); setHovQuad(null); }}
+            >
               <title>{`${tech.name}: ${tech.desc}`}</title>
               {isHov && <circle cx={pos.x} cy={pos.y} r={14} fill={color} fillOpacity={0.12} />}
+              <line
+                x1={pos.x}
+                y1={pos.y}
+                x2={pos.labelX}
+                y2={pos.labelY}
+                stroke={color}
+                strokeOpacity={isHov ? 0.65 : 0.28}
+                strokeWidth={isHov ? 1.1 : 0.7}
+              />
               <circle
-                ref={(el) => { dotsRef.current[i] = el; }}
-                data-tx={pos.x}
-                data-ty={pos.y}
                 cx={pos.x} cy={pos.y}
                 r={isHov ? 7 : 5}
                 fill={color}
@@ -310,22 +329,26 @@ function TechRadar() {
                 strokeWidth={isHov ? 1.5 : 0.5}
                 strokeOpacity={0.6}
                 style={{ cursor: 'pointer', transition: 'r 0.15s, fill-opacity 0.15s' }}
-                onMouseEnter={() => { setHovered(tech.name); setHovQuad(tech.quad); }}
-                onMouseLeave={() => { setHovered(null); setHovQuad(null); }}
               />
-              {isHov && (
-                <text
-                  x={pos.x}
-                  y={pos.above ? pos.y - 12 : pos.y + 18}
-                  textAnchor="middle"
-                  fontSize="8"
-                  fill="#fff"
-                  fontFamily="JetBrains Mono, monospace"
-                  style={{ pointerEvents: 'none' }}
-                >
-                  {tech.name}
-                </text>
-              )}
+              <circle
+                cx={pos.labelX}
+                cy={pos.labelY}
+                r={2}
+                fill={color}
+                fillOpacity={isHov ? 0.95 : 0.55}
+              />
+              <text
+                x={pos.labelX + labelPad}
+                y={pos.labelY + 2.5}
+                textAnchor={pos.anchor}
+                fontSize="6.8"
+                fill={isHov ? '#fff' : color}
+                fillOpacity={isHov ? 1 : 0.82}
+                fontFamily="JetBrains Mono, monospace"
+                style={{ pointerEvents: 'none' }}
+              >
+                {tech.name}
+              </text>
             </g>
           );
         })}
