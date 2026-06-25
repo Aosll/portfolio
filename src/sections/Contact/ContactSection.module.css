@@ -55,7 +55,15 @@
   font-weight: 900;
   letter-spacing: -0.03em;
   line-height: 1;
-  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+  background: linear-gradient(
+    90deg,
+    var(--accent-cyan),
+    var(--accent-blue),
+    var(--accent-purple),
+    var(--accent-blue),
+    var(--accent-cyan)
+  );
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

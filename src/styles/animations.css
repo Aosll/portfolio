@@ -35,10 +35,26 @@
   }
 }
 
+/* Flowing gradient for background-clip:text headings — pair with a wide,
+   looping gradient + `background-size: 200% auto`. Frozen under reduced-motion
+   by the global rule in globals.css. */
+@keyframes gradientFlow {
+  to {
+    background-position: 200% center;
+  }
+}
+
 .u-float {
   animation: float 4s var(--transition-smooth) infinite;
 }
 
 .u-pulse {
   animation: pulse-glow 2.4s var(--transition-smooth) infinite;
+}
+
+/* Apply to a background-clip:text heading that already sets a wide looping
+   gradient + `background-size: 200% auto`. Global so the keyframe resolves
+   across CSS-module boundaries (module-scoped animation names won't match). */
+.u-gradient-flow {
+  animation: gradientFlow 8s linear infinite;
 }

@@ -392,7 +392,7 @@ export default function ContactSection() {
           <h2 ref={headRef} className={styles.heading}>
             LET&rsquo;S BUILD SOMETHING
           </h2>
-          <span ref={accentRef} className={styles.headingAccent}>EXTRAORDINARY</span>
+          <span ref={accentRef} className={`${styles.headingAccent} u-gradient-flow`}>EXTRAORDINARY</span>
           <p ref={subRef} className={styles.sub}>
             Open to internships, collaborations and full-time roles.
           </p>

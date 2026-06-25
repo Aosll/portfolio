@@ -17,7 +17,15 @@
   font-size: var(--text-h2);
   font-weight: 800;
   letter-spacing: -0.02em;
-  background: linear-gradient(120deg, #fff, var(--accent-cyan) 55%, var(--accent-blue));
+  background: linear-gradient(
+    120deg,
+    #fff,
+    var(--accent-cyan) 35%,
+    var(--accent-blue) 55%,
+    var(--accent-purple) 70%,
+    #fff
+  );
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

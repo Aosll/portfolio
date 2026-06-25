@@ -21,7 +21,7 @@ export default function LoadingScreen() {
 
   return (
     <div ref={rootRef} className={styles.screen} role="status" aria-live="polite">
-      <div className={styles.brand}>{SITE.name}</div>
+      <div className={`${styles.brand} u-gradient-flow`}>{SITE.name}</div>
       <div className={styles.bar}>
         <span className={styles.fill} style={{ width: `${loadingProgress}%` }} />
       </div>
