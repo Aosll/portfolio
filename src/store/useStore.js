@@ -14,7 +14,7 @@ export const useStore = create((set) => ({
   isLoading: true, // intro/loader gate — starts true
   loadingProgress: 0, // 0–100
   activeProject: null, // project ID currently focused, or null
-  isMobile: false,
+  isMobile: typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches,
   heroExit: 0, // 0→1 progress of the Hero pin/exit transition (Phase 5.3)
 
   // --- Actions ---

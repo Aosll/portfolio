@@ -8,6 +8,8 @@ import {
   Vignette,
 } from '@react-three/postprocessing';
 
+import { useStore } from '@/store/useStore';
+
 /**
  * SceneManager — Phase 4.1.
  *
@@ -20,6 +22,10 @@ import {
  * fills it (absolute inset 0), overridable via the `style` prop.
  */
 export default function SceneManager({ children, className, style }) {
+  // Cap the device-pixel-ratio lower on phones so high-DPI screens don't render
+  // 2× the fragments (the single biggest WebGL cost on mobile).
+  const isMobile = useStore((s) => s.isMobile);
+
   // ChromaticAberration's offset becomes a Vector2 shader uniform — give it a
   // real Vector2 (an array would break the uniform).
   const caOffset = useMemo(() => new Vector2(0.001, 0.001), []);
@@ -33,7 +39,7 @@ export default function SceneManager({ children, className, style }) {
     <Canvas
       className={className}
       style={canvasStyle}
-      dpr={[1, 2]}
+      dpr={isMobile ? [1, 1.5] : [1, 2]}
       gl={{ antialias: true, alpha: true }}
       camera={{ fov: 60, near: 0.1, far: 1000, position: [0, 0, 5] }}
     >

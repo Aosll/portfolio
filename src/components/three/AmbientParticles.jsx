@@ -7,7 +7,6 @@ import { useStore } from '@/store/useStore';
 import particlesVert from '@shaders/particles.vert';
 import particlesFrag from '@shaders/particles.frag';
 
-const COUNT = 4000;
 const RADIUS = 40;
 
 /**
@@ -25,6 +24,10 @@ export default function AmbientParticles() {
   const pointsRef = useRef(null);
   const materialRef = useRef(null);
   const { gl } = useThree();
+
+  // Thin the field out on phones — fewer points is the cheapest mobile win.
+  const isMobile = useStore((s) => s.isMobile);
+  const COUNT = isMobile ? 1500 : 4000;
 
   // Static geometry buffers: positions inside the sphere + per-particle colors.
   const [positions, colors] = useMemo(() => {
@@ -54,7 +57,7 @@ export default function AmbientParticles() {
     }
 
     return [pos, col];
-  }, []);
+  }, [COUNT]);
 
   const uniforms = useMemo(
     () => ({

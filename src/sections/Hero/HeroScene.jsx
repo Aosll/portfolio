@@ -24,6 +24,10 @@ export default function HeroScene() {
   const octaRef = useRef(null);
   const torusRef = useRef(null);
 
+  // Lighter scene on phones: fewer neural-net nodes (see AmbientParticles + the
+  // SceneManager dpr clamp for the rest of the mobile budget).
+  const isMobile = useStore((s) => s.isMobile);
+
   useFrame((state) => {
     const { scrollProgress: p, heroExit: exit } = useStore.getState();
 
@@ -66,7 +70,7 @@ export default function HeroScene() {
       <group ref={sceneRef}>
         {/* 1. Neural network — right side, scaled down, slowly rotating. */}
         <group ref={netRef} position={[6, 0, -2]} scale={0.8}>
-          <NeuralNetwork />
+          <NeuralNetwork nodeCount={isMobile ? 36 : 60} />
         </group>
 
         {/* 2. Floating geometric shapes. */}
