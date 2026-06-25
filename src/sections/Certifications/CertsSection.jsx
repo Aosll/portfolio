@@ -169,15 +169,16 @@ function EduCard({ edu, index }) {
 // ─── Main section ─────────────────────────────────────────────────────────────
 
 export default function CertsSection() {
-  const rootRef      = useRef(null);
-  const labelRef     = useRef(null);
-  const headingRef   = useRef(null);
-  const eduLabelRef  = useRef(null);
-  const actLabelRef  = useRef(null);
+  const rootRef       = useRef(null);
+  const labelRef      = useRef(null);
+  const headingRef    = useRef(null);
+  const eduLabelRef   = useRef(null);
+  const eduHeadingRef = useRef(null);
+  const actLabelRef   = useRef(null);
 
   useEffect(() => {
     if (prefersReducedMotion()) return; // leave headings visible, skip the reveal
-    const els = [labelRef, headingRef, eduLabelRef, actLabelRef];
+    const els = [eduLabelRef, eduHeadingRef, labelRef, headingRef, actLabelRef];
     els.forEach((r, i) => {
       if (!r.current) return;
       gsap.set(r.current, { autoAlpha: 0, y: 20 });
@@ -201,29 +202,35 @@ export default function CertsSection() {
     >
       <div className={styles.inner}>
 
-        {/* ── Certifications ── */}
-        <div className={styles.headingRow}>
-          <div>
-            <p ref={labelRef} className={styles.label}>Certifications &amp; Training</p>
-            <h2 ref={headingRef} className={styles.heading}>
-              Verified Credentials
-              <span className={styles.countBadge}>{CERTS.length}</span>
-            </h2>
+        {/* ── Education (leads the section) ── */}
+        <div className={styles.block}>
+          <div className={styles.headingRow}>
+            <div>
+              <p ref={eduLabelRef} className={styles.label}>Education</p>
+              <h2 ref={eduHeadingRef} className={styles.heading}>Academic Background</h2>
+            </div>
           </div>
-        </div>
-
-        <div className={styles.certsGrid}>
-          {CERTS.map((cert, i) => (
-            <CertCard key={cert.id} cert={cert} index={i} />
-          ))}
-        </div>
-
-        {/* ── Education ── */}
-        <div className={styles.subsection}>
-          <p ref={eduLabelRef} className={styles.label}>Education</p>
           <div className={styles.eduGrid}>
             {EDUCATION.map((edu, i) => (
               <EduCard key={edu.id} edu={edu} index={i} />
+            ))}
+          </div>
+        </div>
+
+        {/* ── Certifications ── */}
+        <div className={styles.block}>
+          <div className={styles.headingRow}>
+            <div>
+              <p ref={labelRef} className={styles.label}>Certifications &amp; Training</p>
+              <h2 ref={headingRef} className={styles.heading}>
+                Verified Credentials
+                <span className={styles.countBadge}>{CERTS.length}</span>
+              </h2>
+            </div>
+          </div>
+          <div className={styles.certsGrid}>
+            {CERTS.map((cert, i) => (
+              <CertCard key={cert.id} cert={cert} index={i} />
             ))}
           </div>
         </div>

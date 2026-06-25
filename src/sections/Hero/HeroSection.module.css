@@ -19,9 +19,10 @@
 .content {
   position: relative;
   z-index: 10;
-  width: 100%;
+  width: min(100%, 760px);
   max-width: 760px;
-  margin-left: clamp(1.5rem, 8vw, 9rem);
+  box-sizing: border-box;
+  margin-left: clamp(1.5rem, 7vw, 7rem);
   padding-right: var(--space-content);
   display: flex;
   flex-direction: column;
@@ -88,7 +89,8 @@
   font-style: italic;
   font-size: var(--text-h3);
   color: var(--text-secondary);
-  max-width: 34ch;
+  max-width: min(34ch, 100%);
+  overflow-wrap: anywhere;
 }
 
 .ctaRow {
@@ -170,6 +172,7 @@
   .content {
     margin-left: 0;
     padding-left: var(--space-content);
+    padding-right: var(--space-content);
     align-items: flex-start;
   }
   .scrollLabel {

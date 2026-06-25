@@ -165,8 +165,10 @@ export default function HeroSection() {
           </span>
           <span data-hero="cta" className={styles.ctaItem}>
             <GlowButton
+              as="a"
+              href={SITE.cv}
+              download="Omer_Efe_Dikici_CV.pdf"
               variant="outline"
-              onClick={() => window.open(SITE.cv, '_blank', 'noopener')}
             >
               Download CV
             </GlowButton>

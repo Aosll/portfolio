@@ -2,6 +2,7 @@
 
 .about {
   padding: var(--space-section) var(--space-content);
+  overflow-x: clip;
 }
 
 .inner {
@@ -11,6 +12,7 @@
   grid-template-columns: 3fr 2fr;
   gap: clamp(3rem, 6vw, 6rem);
   align-items: start;
+  min-width: 0;
 }
 
 /* ─── Left column ──────────────────────────────────────────────────────────── */
@@ -19,6 +21,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  min-width: 0;
 }
 
 .label {
@@ -83,10 +86,13 @@
 .right {
   position: sticky;
   top: 6rem;
+  min-width: 0;
 }
 
 .profileCard {
   padding: 2.5rem 2rem;
+  width: min(100%, 420px);
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;

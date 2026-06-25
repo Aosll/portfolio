@@ -3,6 +3,7 @@
 /* Outer: tall enough for scroll travel. Height is set inline (PROJECTS.length * 100vh). */
 .projects {
   position: relative;
+  overflow-x: clip;
 }
 
 /* ─── Sticky viewport ──────────────────────────────────────────────────────── */

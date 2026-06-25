@@ -29,7 +29,7 @@ export const SITE = {
 
 export const SOCIALS = {
   github: 'https://github.com/Aosll',
-  linkedin: '',
+  linkedin: 'https://www.linkedin.com/in/omerdikici',
   email: `mailto:${SITE.email}`,
 };
 

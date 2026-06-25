@@ -27,14 +27,39 @@
   border-bottom-color: var(--border-glass);
 }
 
-/* OED monogram */
+/* Brand mark — hexagonal node-graph icon + OED wordmark */
 .logo {
-  font-family: var(--font-mono);
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--accent-cyan);
-  text-shadow: 0 0 18px rgba(0, 212, 255, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.logoMark {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 7px rgba(0, 212, 255, 0.35));
+  transition:
+    transform 0.45s var(--transition-smooth),
+    filter 0.45s var(--transition-smooth);
+}
+
+.logo:hover .logoMark {
+  transform: rotate(-9deg) scale(1.08);
+  filter: drop-shadow(0 0 13px rgba(139, 92, 246, 0.55));
+}
+
+.logoWord {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: 0.18em;
+  padding-right: 0.04em; /* offset trailing letter-spacing */
+  background: linear-gradient(120deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 /* desktop links */

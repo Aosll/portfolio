@@ -8,9 +8,10 @@ import styles from './GlowButton.module.css';
  *
  * Props:
  *   - children
+ *   - as        element/component to render ('button' default, e.g. 'a' for links)
  *   - variant   'primary' | 'outline' | 'ghost'
  *   - onClick   forwarded; called after the ripple is queued
- *   - ...rest   passthrough (type, disabled, aria-*, etc.)
+ *   - ...rest   passthrough (type, href, download, disabled, aria-*, etc.)
  */
 const VARIANT_CLASS = {
   primary: 'primary',
@@ -20,6 +21,7 @@ const VARIANT_CLASS = {
 
 const GlowButton = forwardRef(function GlowButton({
   children,
+  as: Component = 'button',
   variant = 'primary',
   className = '',
   onClick,
@@ -43,7 +45,7 @@ const GlowButton = forwardRef(function GlowButton({
   const variantClass = styles[VARIANT_CLASS[variant]] ?? styles.primary;
 
   return (
-    <button
+    <Component
       ref={ref}
       className={[styles.btn, variantClass, className].filter(Boolean).join(' ')}
       onClick={handleClick}
@@ -58,9 +60,9 @@ const GlowButton = forwardRef(function GlowButton({
           onAnimationEnd={() =>
             setRipples((list) => list.filter((it) => it.id !== r.id))
           }
-            />
-        ))}
-    </button>
+        />
+      ))}
+    </Component>
   );
 });
 

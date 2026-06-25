@@ -32,8 +32,10 @@ export default function KineticDivider({
         end: 'bottom top',
         scrub: 0.6,
       };
-      gsap.fromTo(lineOneRef.current, { xPercent: 12 }, { xPercent: -12, ease: 'none', scrollTrigger });
-      gsap.fromTo(lineTwoRef.current, { xPercent: -16 }, { xPercent: 16, ease: 'none', scrollTrigger });
+      // Tight travel keeps the statement kinetic without pushing either line
+      // beyond the viewport at the scroll extremes.
+      gsap.fromTo(lineOneRef.current, { xPercent: 2.5 }, { xPercent: -2.5, ease: 'none', scrollTrigger });
+      gsap.fromTo(lineTwoRef.current, { xPercent: -2.5 }, { xPercent: 2.5, ease: 'none', scrollTrigger });
     },
     { scope: rootRef }
   );

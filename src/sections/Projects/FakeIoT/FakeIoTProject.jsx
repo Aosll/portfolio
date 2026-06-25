@@ -280,6 +280,9 @@ const OUTCOMES = [
   'Wireshark traffic capture integrated',
 ];
 
+const SUMMARY =
+  'An ESP32-based IoT honeypot with a Flask pipeline. Ömer led security testing and validation, using Kali Linux tooling to simulate attacker behavior and verify what the platform captured.';
+
 const TAGS = ['ESP32', 'Flask', 'Python', 'Kali Linux', 'Nmap', 'Hydra', 'Wireshark', 'TCP/IP'];
 
 // ─── Main export ──────────────────────────────────────────────────────────────
@@ -293,6 +296,7 @@ export default function FakeIoTProject() {
 
         <h2 className={styles.title}>FakeIoT<span className={styles.titleAccent}>Honeypot</span></h2>
         <p className={styles.subtitle}>IoT Deception &amp; Security Testing Platform</p>
+        <p className={styles.summary}>{SUMMARY}</p>
 
         {/* Architecture */}
         <div className={styles.archBlock}>

@@ -4,70 +4,136 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { useGSAP } from '@hooks/useGSAP';
 import GlassPanel from '@components/ui/GlassPanel';
+import { prefersReducedMotion } from '@utils/motion';
 
 import styles from './SkillsSection.module.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ─── Data ────────────────────────────────────────────────────────────────────
-
-// ring: 0=Expert 1=Advanced 2=Proficient 3=Beginner   quadrant: 0-3
+// ─── Radar data ────────────────────────────────────────────────────────────────
+// ring: 0=Expert 1=Advanced 2=Proficient 3=Familiar   quad: 0-3 (see QUAD_LABELS)
+// Every entry is a real term from Ömer's domains (languages, security, AI/embedded,
+// cloud/mobile) so the radar reads as his actual toolkit.
 const TECHS = [
-  // Expert
-  { name: 'Python',       ring: 0, quad: 0, desc: 'Primary language — scripting, ML pipelines, backend'     },
-  { name: 'C',            ring: 0, quad: 0, desc: 'Systems programming, embedded firmware'                   },
-  { name: 'Swift',        ring: 0, quad: 3, desc: 'Native iOS development, SwiftUI, SwiftData'               },
-  { name: 'Cybersecurity',ring: 0, quad: 1, desc: 'QRadar SIEM, MITRE ATT&CK, threat modelling'             },
-  // Advanced
-  { name: 'C++',          ring: 1, quad: 0, desc: 'OOP, DSA, performance-critical code'                      },
-  { name: 'Java',         ring: 1, quad: 0, desc: 'Academic projects, OOP fundamentals'                      },
-  { name: 'SQL',          ring: 1, quad: 0, desc: 'Relational DB design, complex queries'                    },
-  { name: 'ESP32',        ring: 1, quad: 2, desc: 'Wi-Fi/BLE MCU, ESPNOW mesh, sensor fusion'               },
-  { name: 'TinyML',       ring: 1, quad: 2, desc: 'Edge Impulse, TensorFlow Lite on microcontrollers'        },
-  { name: 'Azure',        ring: 1, quad: 2, desc: 'Azure services, M365, Entra ID, cloud infra'              },
-  // Proficient
-  { name: 'GSAP',         ring: 2, quad: 3, desc: 'Web animations, scroll-driven timelines'                  },
-  { name: 'Flask',        ring: 2, quad: 3, desc: 'REST APIs, ML model serving'                              },
-  { name: 'TensorFlow',   ring: 2, quad: 0, desc: 'Model training, Keras API, Edge deployment'               },
-  { name: 'Three.js',     ring: 2, quad: 3, desc: 'WebGL, 3D scenes, shaders'                               },
-  // Beginner
-  { name: 'Kubernetes',   ring: 3, quad: 2, desc: 'Container orchestration basics'                           },
-  { name: 'Rust',         ring: 3, quad: 0, desc: 'Memory safety, systems programming exploration'           },
+  // Languages & Data
+  { name: 'Python',          ring: 0, quad: 0, desc: 'ML pipelines, backend, scripting' },
+  { name: 'Java',            ring: 1, quad: 0, desc: 'OOP fundamentals and coursework' },
+  { name: 'C++',             ring: 1, quad: 0, desc: 'OOP, data structures, performance' },
+  { name: 'C',               ring: 1, quad: 0, desc: 'Systems & embedded firmware' },
+  { name: 'MySQL',           ring: 2, quad: 0, desc: 'Relational design & queries' },
+  // Cybersecurity
+  { name: 'IBM QRadar',      ring: 0, quad: 1, desc: 'SIEM log analysis & detection' },
+  { name: 'MITRE ATT&CK',    ring: 1, quad: 1, desc: 'Adversary TTP mapping' },
+  { name: 'Kali Linux',      ring: 1, quad: 1, desc: 'Nmap · Hydra · Wireshark' },
+  { name: 'Pen-Testing',     ring: 2, quad: 1, desc: 'Vulnerability assessment' },
+  // AI & Embedded
+  { name: 'ESP32',           ring: 1, quad: 2, desc: 'Wi-Fi / BLE MCU firmware' },
+  { name: 'TinyML',          ring: 1, quad: 2, desc: 'On-device ML, Edge Impulse' },
+  { name: 'Edge Impulse',    ring: 2, quad: 2, desc: 'Collect, train, deploy pipeline' },
+  { name: 'TensorFlow Lite', ring: 2, quad: 2, desc: 'Compact model deployment' },
+  { name: 'ESP-NOW',         ring: 2, quad: 2, desc: 'Low-latency wireless mesh' },
+  // Cloud & Mobile
+  { name: 'Swift',           ring: 1, quad: 3, desc: 'Native iOS development' },
+  { name: 'Azure',           ring: 1, quad: 3, desc: 'Provisioning & monitoring' },
+  { name: 'SwiftUI',         ring: 2, quad: 3, desc: 'Declarative iOS UI' },
+  { name: 'M365',            ring: 2, quad: 3, desc: 'Entra ID, admin & security' },
+  { name: 'SpriteKit',       ring: 2, quad: 3, desc: 'Native iOS game rendering' },
 ];
 
-const RING_LABELS  = ['Expert', 'Advanced', 'Proficient', 'Beginner'];
-const QUAD_LABELS  = ['Languages', 'Security', 'Cloud + Embedded', 'Mobile + Web'];
-const RING_COLORS  = ['#00d4ff', '#4f8ef7', '#8b5cf6', '#10b981'];
-const RING_RADII   = [68, 110, 152, 192];   // SVG units from center
-const CX = 220, CY = 220, SIZE = 440;       // SVG viewport
+const RING_LABELS = ['Expert', 'Advanced', 'Proficient', 'Familiar'];
+const QUAD_LABELS = ['Languages & Data', 'Cybersecurity', 'AI & Embedded', 'Cloud & Mobile'];
+const RING_COLORS = ['#00d4ff', '#4f8ef7', '#8b5cf6', '#10b981'];
+const RING_RADII  = [66, 106, 146, 186];     // SVG units from center
+const CX = 220, CY = 220, SIZE = 440;          // SVG viewport
 
-const SKILL_BARS = [
-  { label: 'Programming Languages', techs: 'Python · Swift · C · C++ · Java',              pct: 90 },
-  { label: 'Cybersecurity',         techs: 'QRadar · Kali · MITRE ATT&CK',                pct: 85 },
-  { label: 'Cloud & Azure',         techs: 'Azure · M365 · Entra ID',                     pct: 80 },
-  { label: 'Embedded Systems',      techs: 'ESP32 · TinyML · ESPNOW',                     pct: 78 },
-  { label: 'Mobile Development',    techs: 'SwiftUI · SwiftData',                         pct: 82 },
-  { label: 'AI & Machine Learning', techs: 'TensorFlow Lite · Edge Impulse',              pct: 75 },
+// Deterministic layout: within each quadrant, sort techs inner→outer by ring and
+// spread them evenly across the wedge. Dots end up on a tidy spiral, so neither
+// the dots nor their labels collide (the old hash-jitter caused the overlap).
+const LAYOUT = (() => {
+  const byQuad = [[], [], [], []];
+  TECHS.forEach((t) => byQuad[t.quad].push(t));
+  const out = {};
+  byQuad.forEach((list, quad) => {
+    const sorted = [...list].sort((a, b) => a.ring - b.ring);
+    const center = quad * 90 - 45;  // wedge centre angle
+    const span   = 64;              // usable arc inside the 90° wedge
+    const n      = sorted.length;
+    sorted.forEach((t, i) => {
+      const frac  = n === 1 ? 0.5 : i / (n - 1);
+      const angle = ((center - span / 2 + frac * span) * Math.PI) / 180;
+      const r     = RING_RADII[t.ring];
+      out[t.name] = {
+        x: CX + Math.cos(angle) * r,
+        y: CY + Math.sin(angle) * r,
+        above: i % 2 === 0, // alternate label side for extra breathing room
+      };
+    });
+  });
+  return out;
+})();
+
+// ─── Competencies (narrative, no percentages) ──────────────────────────────────
+
+const COMPETENCIES = [
+  {
+    label: 'Programming & Data',
+    accent: '#00d4ff',
+    techs: ['Python', 'C / C++', 'Java', 'Swift', 'MySQL'],
+    blurb:
+      'Comfortable moving between low-level C / C++ systems work, Python automation and data handling, Java OOP foundations, Swift application code, and MySQL-backed relational thinking.',
+  },
+  {
+    label: 'Cybersecurity',
+    accent: '#8b5cf6',
+    techs: ['IBM QRadar', 'MITRE ATT&CK', 'Kali Linux', 'Nmap', 'Hydra', 'Wireshark'],
+    blurb:
+      'Built blue-team experience through QRadar log analysis and detection-rule work, then validated IoT attack paths with Kali tooling, Nmap scans, Hydra credential attacks and Wireshark captures.',
+  },
+  {
+    label: 'AI & Machine Learning',
+    accent: '#4f8ef7',
+    techs: ['TinyML', 'TensorFlow Lite', 'Edge Impulse', 'Gesture Classification'],
+    blurb:
+      'Focused on edge AI: collect clean sensor data, train compact models, validate accuracy thresholds, and deploy inference to constrained microcontroller environments.',
+  },
+  {
+    label: 'Embedded & IoT',
+    accent: '#10b981',
+    techs: ['ESP32', 'Embedded C', 'ESP-NOW', 'Sensor Integration', 'TCP/IP'],
+    blurb:
+      'Works close to hardware with ESP32 firmware, sensor integration, ESP-NOW communication, TCP/IP concepts, and real-time behavior for wearable and IoT prototypes.',
+  },
+  {
+    label: 'Cloud & Platforms',
+    accent: '#0078d4',
+    techs: ['Azure', 'Microsoft 365', 'Entra ID', 'Copilot'],
+    blurb:
+      'Operated Azure resources in a business environment, handled provisioning and monitoring, and administered Microsoft 365 users, access control and security settings.',
+  },
+  {
+    label: 'Mobile & Web',
+    accent: '#f472b6',
+    techs: ['SwiftUI', 'SwiftData', 'SpriteKit', 'React', 'Three.js'],
+    blurb:
+      'Ships native iOS experiences with SwiftUI, SwiftData and SpriteKit, while also building expressive web interfaces with React, Three.js and GSAP.',
+  },
 ];
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Soft skills ───────────────────────────────────────────────────────────────
 
-function dotPosition(tech) {
-  // Each quadrant is 90°. Add a per-tech hash offset so dots spread inside their quadrant.
-  const hash = tech.name.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-  const baseAngle = tech.quad * 90 - 45; // center of each quadrant
-  const spread    = ((hash % 60) - 30);  // ±30° spread within quadrant
-  const angleDeg  = baseAngle + spread;
-  const angleRad  = (angleDeg * Math.PI) / 180;
-  const r         = RING_RADII[tech.ring] - 8 + (hash % 16); // subtle radial jitter
-  return { x: CX + Math.cos(angleRad) * r, y: CY + Math.sin(angleRad) * r };
-}
+const SOFT_SKILLS = [
+  { label: 'Leadership',       icon: '◆', blurb: 'Served as AI Lead on a 4-person senior project and Vice Chairman of the TEDU Science & Technology Society.' },
+  { label: 'Communication',    icon: '◈', blurb: 'Delivered threat-briefing presentations and turns technical security or embedded details into stakeholder-readable language.' },
+  { label: 'Teamwork',         icon: '⬡', blurb: 'Contributes across small project teams where firmware, security validation, data analysis and product decisions have to move together.' },
+  { label: 'Product Thinking', icon: '◇', blurb: 'Uses the Business Administration secondary field to frame engineering decisions around users, adoption, deadlines and constraints.' },
+  { label: 'Ownership',        icon: '⊚', blurb: 'Takes projects from idea to working build, including a solo native iOS game with localization and on-device persistence.' },
+  { label: 'Adaptability',     icon: '✦', blurb: 'Cross-domain range from three internships: cybersecurity operations, cloud workplace IT and software development.' },
+];
 
-// ─── Tooltip ─────────────────────────────────────────────────────────────────
+// ─── Tooltip ────────────────────────────────────────────────────────────────────
 
 function Tooltip({ tech, x, y }) {
   if (!tech) return null;
-  // Keep tooltip inside SVG viewport
   const left = x > SIZE * 0.65 ? x - 160 : x + 16;
   const top  = y > SIZE * 0.65 ? y - 80  : y + 12;
   return (
@@ -83,17 +149,27 @@ function Tooltip({ tech, x, y }) {
   );
 }
 
-// ─── Tech Radar SVG ──────────────────────────────────────────────────────────
+// ─── Tech Radar SVG ─────────────────────────────────────────────────────────────
 
 function TechRadar() {
-  const [hovered, setHovered]     = useState(null); // tech name
-  const [hovQuad, setHovQuad]     = useState(null); // quad index
-  const dotsRef                   = useRef([]);
-  const radarRef                   = useRef(null);
+  const [hovered, setHovered] = useState(null); // tech name
+  const [hovQuad, setHovQuad] = useState(null); // quad index
+  const dotsRef  = useRef([]);
+  const radarRef = useRef(null);
 
-  // Animate dots flying in from center on reveal
+  // Dots fly in from the centre on reveal (skipped under reduced-motion, where
+  // they simply appear in place so the radar is never left blank).
   useEffect(() => {
-    if (!radarRef.current) return;
+    if (!radarRef.current) return undefined;
+
+    if (prefersReducedMotion()) {
+      dotsRef.current.forEach((el) => {
+        if (!el) return;
+        gsap.set(el, { attr: { cx: el.dataset.tx, cy: el.dataset.ty }, opacity: 1, scale: 1 });
+      });
+      return undefined;
+    }
+
     const trigger = ScrollTrigger.create({
       trigger: radarRef.current,
       start: 'top 80%',
@@ -111,16 +187,15 @@ function TechRadar() {
         });
       },
     });
-    // Set initial positions (invisible at center)
-    dotsRef.current.forEach(el => {
+    dotsRef.current.forEach((el) => {
       if (!el) return;
       gsap.set(el, { attr: { cx: CX, cy: CY }, opacity: 0, scale: 0 });
     });
     return () => trigger.kill();
   }, []);
 
-  const hoveredTech = hovered ? TECHS.find(t => t.name === hovered) : null;
-  const hoveredPos  = hoveredTech ? dotPosition(hoveredTech) : null;
+  const hoveredTech = hovered ? TECHS.find((t) => t.name === hovered) : null;
+  const hoveredPos  = hovered ? LAYOUT[hovered] : null;
 
   return (
     <div ref={radarRef} className={styles.radarWrap}>
@@ -145,7 +220,7 @@ function TechRadar() {
         )}
 
         {/* Quadrant dividers */}
-        {[0, 90, 180, 270].map(deg => {
+        {[0, 90, 180, 270].map((deg) => {
           const r = (deg * Math.PI) / 180;
           const R = RING_RADII[3] + 14;
           return (
@@ -192,7 +267,7 @@ function TechRadar() {
         {QUAD_LABELS.map((label, i) => {
           const angleDeg = i * 90 - 45;
           const angleRad = (angleDeg * Math.PI) / 180;
-          const r = RING_RADII[3] + 24;
+          const r = RING_RADII[3] + 26;
           return (
             <text
               key={i}
@@ -201,9 +276,9 @@ function TechRadar() {
               textAnchor="middle"
               dominantBaseline="middle"
               fontSize="8.5"
-              fill="rgba(160,174,192,0.55)"
+              fill="rgba(160,174,192,0.6)"
               fontFamily="JetBrains Mono, monospace"
-              letterSpacing="0.08em"
+              letterSpacing="0.06em"
               style={{ textTransform: 'uppercase', cursor: 'default' }}
               onMouseEnter={() => setHovQuad(i)}
               onMouseLeave={() => setHovQuad(null)}
@@ -213,26 +288,24 @@ function TechRadar() {
           );
         })}
 
-        {/* Tech dots */}
+        {/* Tech dots. The always-visible labels live in the legend below so the
+            radar itself stays readable at every viewport size. */}
         {TECHS.map((tech, i) => {
-          const { x, y } = dotPosition(tech);
-          const color    = RING_COLORS[tech.ring];
-          const isHov    = hovered === tech.name;
+          const pos    = LAYOUT[tech.name];
+          const color  = RING_COLORS[tech.ring];
+          const isHov  = hovered === tech.name;
           return (
             <g key={tech.name}>
-              {/* Glow halo */}
-              {isHov && (
-                <circle cx={x} cy={y} r={14} fill={color} fillOpacity={0.12} />
-              )}
-              {/* Dot */}
+              <title>{`${tech.name}: ${tech.desc}`}</title>
+              {isHov && <circle cx={pos.x} cy={pos.y} r={14} fill={color} fillOpacity={0.12} />}
               <circle
-                ref={el => { dotsRef.current[i] = el; }}
-                data-tx={x}
-                data-ty={y}
-                cx={x} cy={y}
+                ref={(el) => { dotsRef.current[i] = el; }}
+                data-tx={pos.x}
+                data-ty={pos.y}
+                cx={pos.x} cy={pos.y}
                 r={isHov ? 7 : 5}
                 fill={color}
-                fillOpacity={isHov ? 1 : 0.8}
+                fillOpacity={isHov ? 1 : 0.85}
                 stroke={isHov ? '#fff' : color}
                 strokeWidth={isHov ? 1.5 : 0.5}
                 strokeOpacity={0.6}
@@ -240,18 +313,19 @@ function TechRadar() {
                 onMouseEnter={() => { setHovered(tech.name); setHovQuad(tech.quad); }}
                 onMouseLeave={() => { setHovered(null); setHovQuad(null); }}
               />
-              {/* Label */}
-              <text
-                x={x} y={y - 9}
-                textAnchor="middle"
-                fontSize="7"
-                fill={isHov ? '#fff' : color}
-                fillOpacity={isHov ? 1 : 0.7}
-                fontFamily="JetBrains Mono, monospace"
-                style={{ pointerEvents: 'none', transition: 'fill-opacity 0.15s' }}
-              >
-                {tech.name}
-              </text>
+              {isHov && (
+                <text
+                  x={pos.x}
+                  y={pos.above ? pos.y - 12 : pos.y + 18}
+                  textAnchor="middle"
+                  fontSize="8"
+                  fill="#fff"
+                  fontFamily="JetBrains Mono, monospace"
+                  style={{ pointerEvents: 'none' }}
+                >
+                  {tech.name}
+                </text>
+              )}
             </g>
           );
         })}
@@ -261,53 +335,95 @@ function TechRadar() {
           <Tooltip tech={hoveredTech} x={hoveredPos.x} y={hoveredPos.y} />
         )}
       </svg>
+      <div className={styles.radarLegend} aria-label="Technology radar legend">
+        {TECHS.map((tech) => (
+          <span
+            key={tech.name}
+            className={styles.radarLegendItem}
+            style={{ '--legend-color': RING_COLORS[tech.ring] }}
+            onMouseEnter={() => { setHovered(tech.name); setHovQuad(tech.quad); }}
+            onMouseLeave={() => { setHovered(null); setHovQuad(null); }}
+          >
+            {tech.name}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
 
-// ─── Skill bar ───────────────────────────────────────────────────────────────
+// ─── Competency card ────────────────────────────────────────────────────────────
 
-function SkillBar({ label, techs, pct }) {
-  const barRef  = useRef(null);
-  const fillRef = useRef(null);
+function CompetencyCard({ comp, index }) {
+  const ref = useRef(null);
 
   useEffect(() => {
+    const el = ref.current;
+    if (!el || prefersReducedMotion()) return undefined;
+    gsap.set(el, { autoAlpha: 0, y: 26 });
     const trigger = ScrollTrigger.create({
-      trigger: barRef.current,
-      start: 'top 88%',
+      trigger: el,
+      start: 'top 90%',
       once: true,
-      onEnter: () => {
-        gsap.fromTo(barRef.current, { autoAlpha: 0, x: -24 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: 'power2.out' });
-        gsap.fromTo(fillRef.current, { width: '0%' }, { width: `${pct}%`, duration: 1.0, ease: 'power3.out', delay: 0.15 });
+      onEnter() {
+        gsap.to(el, { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power3.out', delay: (index % 2) * 0.08 });
       },
     });
-    gsap.set(barRef.current, { autoAlpha: 0 });
     return () => trigger.kill();
-  }, [pct]);
+  }, [index]);
 
   return (
-    <div ref={barRef} className={styles.skillBar}>
-      <div className={styles.skillBarHeader}>
-        <span className={styles.skillBarLabel}>{label}</span>
-        <span className={styles.skillBarPct}>{pct}%</span>
+    <GlassPanel ref={ref} className={styles.compCard} style={{ '--comp-accent': comp.accent }}>
+      <h3 className={styles.compLabel}>{comp.label}</h3>
+      <p className={styles.compBlurb}>{comp.blurb}</p>
+      <div className={styles.compTechs}>
+        {comp.techs.map((t) => (
+          <span key={t} className={styles.compTech}>{t}</span>
+        ))}
       </div>
-      <p className={styles.skillBarTechs}>{techs}</p>
-      <div className={styles.skillBarTrack}>
-        <div ref={fillRef} className={styles.skillBarFill} style={{ width: 0 }} />
+    </GlassPanel>
+  );
+}
+
+// ─── Soft-skill card ────────────────────────────────────────────────────────────
+
+function SoftSkill({ skill, index }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || prefersReducedMotion()) return undefined;
+    gsap.set(el, { autoAlpha: 0, y: 20 });
+    const trigger = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 92%',
+      once: true,
+      onEnter() {
+        gsap.to(el, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out', delay: (index % 3) * 0.06 });
+      },
+    });
+    return () => trigger.kill();
+  }, [index]);
+
+  return (
+    <div ref={ref} className={styles.softCard}>
+      <span className={styles.softIcon} aria-hidden="true">{skill.icon}</span>
+      <div className={styles.softText}>
+        <h4 className={styles.softLabel}>{skill.label}</h4>
+        <p className={styles.softBlurb}>{skill.blurb}</p>
       </div>
     </div>
   );
 }
 
-// ─── Main section ─────────────────────────────────────────────────────────────
+// ─── Main section ───────────────────────────────────────────────────────────────
 
 export default function SkillsSection() {
   const rootRef = useRef(null);
 
   useGSAP(
     () => {
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) return;
+      if (prefersReducedMotion()) return;
       gsap.from('[data-skills="label"]',   { y: 20, autoAlpha: 0, duration: 0.6, scrollTrigger: { trigger: '[data-skills="label"]',   start: 'top 88%', once: true } });
       gsap.from('[data-skills="heading"]', { y: 30, autoAlpha: 0, duration: 0.7, ease: 'power3.out', scrollTrigger: { trigger: '[data-skills="heading"]', start: 'top 88%', once: true } });
       gsap.from('[data-skills="sub"]',     { x: 40, autoAlpha: 0, duration: 0.7, scrollTrigger: { trigger: '[data-skills="sub"]', start: 'top 88%', once: true } });
@@ -328,18 +444,32 @@ export default function SkillsSection() {
           <p data-skills="label" className={styles.label}>Technical Skills</p>
           <h2 data-skills="heading" className={styles.heading}>Tech Radar &amp; Competencies</h2>
           <p data-skills="sub" className={styles.sub}>
-            An interactive map of tools and languages — plotted by depth of experience across four domains.
+            An interactive map of the tools and domains I work in — plotted by depth of
+            experience, then unpacked below.
           </p>
         </div>
 
         {/* Radar */}
         <TechRadar />
 
-        {/* Skill bars */}
-        <div className={styles.barsGrid}>
-          {SKILL_BARS.map(s => (
-            <SkillBar key={s.label} {...s} />
-          ))}
+        {/* Competencies — narrative, no percentages */}
+        <div className={styles.subBlock}>
+          <p className={styles.subLabel}>Competencies</p>
+          <div className={styles.compGrid}>
+            {COMPETENCIES.map((c, i) => (
+              <CompetencyCard key={c.label} comp={c} index={i} />
+            ))}
+          </div>
+        </div>
+
+        {/* Soft skills */}
+        <div className={styles.subBlock}>
+          <p className={styles.subLabel}>Soft Skills</p>
+          <div className={styles.softGrid}>
+            {SOFT_SKILLS.map((s, i) => (
+              <SoftSkill key={s.label} skill={s} index={i} />
+            ))}
+          </div>
         </div>
       </div>
     </section>

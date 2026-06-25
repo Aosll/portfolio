@@ -294,6 +294,9 @@ const HIGHLIGHTS = [
   'Game engine: SpriteKit physics + animations',
 ];
 
+const SUMMARY =
+  'A solo native iOS educational word game shipped end-to-end. It combines SwiftUI screens, SpriteKit game moments, SwiftData persistence and 5-language localization without a backend dependency.';
+
 const FEATURES = [
   { icon: '🎮', title: 'Educational Word Games', desc: 'Vocabulary challenges with game mechanics' },
   { icon: '🌍', title: '5 Languages',            desc: 'TR · EN · DE · FR · ES fully localized'   },
@@ -314,6 +317,7 @@ export default function CampusQuestProject() {
 
         <h2 className={styles.title}>CampusQuest <span className={styles.titleSub}>Academy</span></h2>
         <p className={styles.subtitle}>Native iOS Educational Word Game</p>
+        <p className={styles.summary}>{SUMMARY}</p>
 
         {/* Highlights */}
         <ul className={styles.highlights}>

@@ -214,6 +214,9 @@ const METRICS = [
   'Edge Impulse pipeline: collect → train → deploy',
 ];
 
+const SUMMARY =
+  'A 4-person senior project: an ESP32 wearable glove that classifies hand gestures on-device and sends commands over ESP-NOW. Ömer led the AI side, from dataset preparation through TinyML model training and validation.';
+
 const TAGS = ['ESP32', 'TinyML', 'TensorFlow Lite', 'Edge Impulse', 'ESP-NOW', 'Embedded C', 'Python'];
 
 // ─── Main export ──────────────────────────────────────────────────────────────
@@ -227,6 +230,7 @@ export default function IlterAkkeProject() {
 
         <h2 className={styles.title}>ILTER-AKKE</h2>
         <p className={styles.subtitle}>Smart Command &amp; Control Glove</p>
+        <p className={styles.summary}>{SUMMARY}</p>
 
         {/* Architecture flow */}
         <div className={styles.archRow}>

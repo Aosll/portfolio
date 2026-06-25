@@ -16,46 +16,58 @@ const EXPERIENCES = [
     id: 'arch-of-sigma',
     company: 'Arch of Sigma',
     role: 'Software Developer Intern',
-    period: 'March – April 2026',
+    period: 'Mar – Apr 2026',
+    location: 'Ankara, Türkiye',
     side: 'right',
     icon: '>_',
     accent: '#00d4ff',
+    blurb:
+      'Built internal tooling end-to-end, connecting CLI architecture, file-based persistence, validation and data analysis into a practical workflow.',
     highlights: [
-      'Modular Python CLI with full CRUD operations',
-      'Input validation + structured exception handling',
-      'Excel PivotTables, VLOOKUP, IF/COUNT analysis',
+      'Engineered a modular Python CLI with full CRUD + file-based persistence',
+      'Hardened it with input validation & structured exception handling',
+      'Modeled and visualized data in Excel with PivotTables, VLOOKUP and IF/COUNT formulas',
+      'Focused on clean error states so the tool could be used reliably by non-developer operators',
     ],
-    tags: ['Python', 'CLI', 'Data Analysis'],
+    tags: ['Python', 'CLI', 'CRUD', 'Excel', 'Data Analysis'],
   },
   {
     id: 'atm-bilisim',
     company: 'ATM Bilişim',
     role: 'Information Technology Intern',
-    period: 'July – August 2025',
+    period: 'Jul – Aug 2025',
+    location: 'Ankara, Türkiye',
     side: 'left',
     icon: '☁',
     accent: '#4f8ef7',
+    blurb:
+      'Hands-on cloud & workplace IT inside a live business environment — Azure operations and Microsoft 365 administration.',
     highlights: [
-      'Microsoft Azure provisioning + resource management',
-      'Microsoft 365 user management + security config',
-      'Copilot AI workflow efficiency evaluation',
+      'Provisioned, managed and monitored Microsoft Azure cloud resources',
+      'Administered Microsoft 365 users, security settings and access controls',
+      'Evaluated Microsoft Copilot across Office apps for workflow efficiency',
+      'Worked inside a production IT context where reliability, permissions and documentation mattered',
     ],
-    tags: ['Azure', 'M365', 'Cloud'],
+    tags: ['Azure', 'Microsoft 365', 'Entra ID', 'Copilot'],
   },
   {
     id: 'turktractor',
     company: 'TürkTraktör A.Ş.',
     role: 'Cybersecurity Intern',
-    period: 'July – August 2024',
+    period: 'Jul – Aug 2024',
+    location: 'Ankara, Türkiye',
     side: 'right',
     icon: '🛡',
     accent: '#8b5cf6',
+    blurb:
+      'Blue-team security operations at one of Türkiye’s largest manufacturers — detection engineering and threat intelligence in a SIEM-driven workflow.',
     highlights: [
-      'IBM QRadar SIEM log analysis + detection rules',
-      'MITRE ATT&CK framework mapping + threat briefings',
-      'LLM + Copilot AI research for IT automation',
+      'Ran log analysis, detection-rule creation & monitoring in IBM QRadar (SIEM)',
+      'Mapped adversary tactics with MITRE ATT&CK; delivered threat briefings',
+      'Researched LLM architectures & Copilot AI for IT automation and tooling',
+      'Connected threat intelligence findings to practical monitoring and response workflows',
     ],
-    tags: ['QRadar', 'MITRE', 'SIEM', 'Cybersecurity'],
+    tags: ['IBM QRadar', 'MITRE ATT&CK', 'SIEM', 'Threat Intel'],
   },
 ];
 
@@ -127,8 +139,14 @@ function ExperienceEntry({ entry, index }) {
             <h3 className={styles.company}>{entry.company}</h3>
             <p className={styles.role}>{entry.role}</p>
           </div>
-          <span className={styles.period}>{entry.period}</span>
+          <span className={styles.period}>
+            {entry.period}
+            {entry.location && <span className={styles.location}>{entry.location}</span>}
+          </span>
         </div>
+
+        {/* Context blurb */}
+        {entry.blurb && <p className={styles.blurb}>{entry.blurb}</p>}
 
         {/* Highlights */}
         <ul className={styles.highlights}>
