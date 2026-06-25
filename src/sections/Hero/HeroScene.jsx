@@ -36,10 +36,13 @@ export default function HeroScene() {
     cam.position.z = 5 + p * 3;
     cam.rotation.x = p * -0.1;
 
-    // Exit transition (Phase 5.3): scene scales down, particles contract toward
-    // center, grid fades out.
+    // Exit transition (Phase 5.3): scene scales down, the particle field bursts
+    // outward and swirls (a measured dispersal), grid fades out.
     if (sceneRef.current) sceneRef.current.scale.setScalar(1 - exit * 0.3); // 1 → 0.7
-    if (particlesRef.current) particlesRef.current.scale.setScalar(1 - exit * 0.8); // contract
+    if (particlesRef.current) {
+      particlesRef.current.scale.setScalar(1 + exit * 2.2); // disperse outward
+      particlesRef.current.rotation.z = exit * 0.6;          // swirl as they scatter
+    }
     if (gridRef.current) {
       gridRef.current.material.transparent = true;
       gridRef.current.material.opacity = 1 - exit;
