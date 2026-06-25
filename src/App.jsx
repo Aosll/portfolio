@@ -9,6 +9,7 @@ import { useStore } from '@/store/useStore';
 import Navbar from '@components/navigation/Navbar';
 import ScrollProgress from '@components/ui/ScrollProgress';
 import LoadingScreen from '@components/ui/LoadingScreen';
+import KineticDivider from '@components/ui/KineticDivider';
 
 // Hero stays eager — it's the first thing the user sees.
 import HeroSection from '@sections/Hero/HeroSection';
@@ -74,6 +75,7 @@ export default function App() {
         <Suspense fallback={<SectionFallback />}>
           <SkillsSection />
         </Suspense>
+        <KineticDivider />
         <Suspense fallback={<SectionFallback />}>
           <ProjectsSection />
         </Suspense>
