@@ -40,12 +40,12 @@ function PillNav({ active, onChange }) {
 
 // ─── Progress bar ─────────────────────────────────────────────────────────────
 
-function ProgressBar({ total, scrollProgress }) {
+function ProgressBar({ total, fillRef }) {
   // Shows the complete pinned-scroll journey through the project sequence.
   const segW = 100 / total;
   return (
     <div className={styles.progressTrack} aria-hidden="true">
-      <div className={styles.progressFill} style={{ width: `${scrollProgress * 100}%` }} />
+      <div ref={fillRef} className={styles.progressFill} />
       {PROJECTS.map((p, i) => (
         <div
           key={p.id}
@@ -59,27 +59,22 @@ function ProgressBar({ total, scrollProgress }) {
 
 // ─── Project slide ────────────────────────────────────────────────────────────
 
-function ProjectSlide({ project, index, active, sequenceProgress }) {
+function ProjectSlide({ project, index, registerSlide }) {
   const CustomComponent = PROJECT_COMPONENTS[project.id];
-  const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const distance = Math.abs(sequenceProgress - index);
-  const opacity = reduce
-    ? (active === index ? 1 : 0)
-    : Math.max(0, Math.min(1, 1 - distance));
-  const isInteractive = active === index;
 
   return (
     <div
+      ref={(el) => registerSlide(index, el)}
       className={`${styles.slide} ${CustomComponent ? styles.slideFull : ''}`}
       style={{
         '--accent': project.accent,
-        opacity,
-        visibility: opacity > 0.02 ? 'visible' : 'hidden',
-        pointerEvents: isInteractive ? 'auto' : 'none',
-        transform: `scale(${0.965 + opacity * 0.035})`,
-        zIndex: isInteractive ? 2 : opacity > 0.02 ? 1 : 0,
+        opacity: index === 0 ? 1 : 0,
+        visibility: index === 0 ? 'visible' : 'hidden',
+        pointerEvents: index === 0 ? 'auto' : 'none',
+        transform: `scale(${index === 0 ? 1 : 0.965})`,
+        zIndex: index === 0 ? 2 : 0,
       }}
-      aria-hidden={isInteractive ? undefined : 'true'}
+      aria-hidden={index === 0 ? undefined : 'true'}
     >
       {CustomComponent ? (
         // Full custom layout (content + 3D scene managed by the component)
@@ -127,13 +122,56 @@ function ProjectSlide({ project, index, active, sequenceProgress }) {
 export default function ProjectsSection() {
   const rootRef        = useRef(null);
   const stickyRef      = useRef(null);
+  const fillRef        = useRef(null);
+  const slidesRef      = useRef([]);
+  const activeRef      = useRef(0);
   const [active, setActive]           = useState(0);
-  const [scrollProgress, setProgress] = useState(0);
+
+  function registerSlide(index, el) {
+    slidesRef.current[index] = el;
+  }
 
   // Sticky scroll: pin the section, drive active project from scroll position.
   useEffect(() => {
     const sections = PROJECTS.length;
     const stops = Math.max(sections - 1, 1);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function renderProgress(progress) {
+      const sequence = progress * stops;
+      const idx = Math.min(Math.round(sequence), sections - 1);
+
+      if (fillRef.current) {
+        fillRef.current.style.width = `${progress * 100}%`;
+      }
+
+      slidesRef.current.forEach((slide, i) => {
+        if (!slide) return;
+        const distance = Math.abs(sequence - i);
+        const opacity = reduce
+          ? (idx === i ? 1 : 0)
+          : Math.max(0, Math.min(1, 1 - distance));
+        const isInteractive = idx === i;
+        slide.style.opacity = String(opacity);
+        slide.style.visibility = opacity > 0.02 ? 'visible' : 'hidden';
+        slide.style.pointerEvents = isInteractive ? 'auto' : 'none';
+        slide.style.transform = `scale(${0.965 + opacity * 0.035})`;
+        slide.style.zIndex = isInteractive ? '2' : opacity > 0.02 ? '1' : '0';
+        if (isInteractive) {
+          slide.removeAttribute('aria-hidden');
+        } else {
+          slide.setAttribute('aria-hidden', 'true');
+        }
+      });
+
+      if (idx !== activeRef.current) {
+        activeRef.current = idx;
+        setActive(idx);
+      }
+    }
+
+    renderProgress(0);
+
     const trigger  = ScrollTrigger.create({
       trigger: rootRef.current,
       start: 'top top',
@@ -142,10 +180,10 @@ export default function ProjectsSection() {
       pin: stickyRef.current,
       scrub: 0.4,
       onUpdate(self) {
-        const sequence = self.progress * stops; // 0 -> last project index
-        const idx = Math.min(Math.round(sequence), sections - 1);
-        setActive(idx);
-        setProgress(self.progress);
+        renderProgress(self.progress);
+      },
+      onRefresh(self) {
+        renderProgress(self.progress);
       },
     });
 
@@ -182,7 +220,7 @@ export default function ProjectsSection() {
         {/* Top chrome */}
         <div className={styles.chrome}>
           <PillNav active={active} onChange={jumpToProject} />
-          <ProgressBar total={PROJECTS.length} scrollProgress={scrollProgress} />
+          <ProgressBar total={PROJECTS.length} fillRef={fillRef} />
         </div>
 
         {/* Project slides — stacked, crossfade */}
@@ -192,8 +230,7 @@ export default function ProjectsSection() {
               key={p.id}
               project={p}
               index={i}
-              active={active}
-              sequenceProgress={scrollProgress * Math.max(PROJECTS.length - 1, 1)}
+              registerSlide={registerSlide}
             />
           ))}
         </div>
